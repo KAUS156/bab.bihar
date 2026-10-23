@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#1e3a8a">
+<meta name="description" content="Bihar Academic Battle School Dashboard">
+<title>School Dashboard | Bihar Academic Battle</title>
+<style>
+:root{--blue:#1e3a8a;--blue2:#2563eb;--bg:#f1f5f9;--ink:#172033;--muted:#64748b;--line:#e2e8f0;--green:#166534;--red:#991b1b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px Arial,sans-serif}
+header{background:var(--blue);color:#fff;padding:14px 18px}.head{max-width:1150px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px}.brand{font-weight:800;font-size:18px}
+button{border:0;border-radius:8px;padding:10px 13px;font-weight:700;cursor:pointer}button:disabled{opacity:.55;cursor:not-allowed}.logout{background:#fff;color:var(--blue)}
+main{max-width:1150px;margin:22px auto;padding:0 14px}.panel{background:#fff;border-radius:13px;padding:20px;margin-bottom:17px;box-shadow:0 4px 18px #0f172a0b}
+h1{font-size:24px;color:var(--blue);margin:0 0 7px}h2{font-size:19px;color:var(--blue);margin:0 0 15px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+.sub,.hint{color:var(--muted);line-height:1.5}.school-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}.info{background:#f8fafc;border:1px solid #edf2f7;border-radius:8px;padding:11px;min-width:0}.info small{display:block;color:var(--muted);margin-bottom:5px}.info strong{overflow-wrap:anywhere}
+.stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}.pill{border-radius:20px;background:#e0e7ff;color:#1e3a8a;padding:7px 11px;font-size:13px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.field label{display:block;font-weight:700;font-size:13px;margin-bottom:6px}.field input,.field select{width:100%;border:1px solid #cbd5e1;border-radius:8px;padding:11px;font:inherit;background:#fff}
+.subjects{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:9px;margin-top:8px}.subject{display:flex;align-items:center;gap:7px;border:1px solid var(--line);border-radius:8px;padding:10px;background:#fafcff}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}.primary{background:var(--blue);color:white}.secondary{background:#e2e8f0;color:#172033}.danger{background:#fee2e2;color:var(--red)}
+.message{display:none;margin:12px 0 0;padding:11px 12px;border-radius:8px;line-height:1.5;overflow-wrap:anywhere}.message.error,.message.success{display:block}.message.error{background:#fee2e2;color:var(--red)}.message.success{background:#dcfce7;color:var(--green)}.hint{font-size:13px}
+.table-wrap{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;border-bottom:1px solid var(--line);padding:11px 10px;vertical-align:top}th{font-size:12px;text-transform:uppercase;color:#475569;background:#f8fafc}td{font-size:14px}.mini{padding:7px 9px;font-size:12px;margin:2px}.status{display:inline-block;padding:5px 8px;border-radius:20px;font-size:12px;font-weight:700;background:#fef3c7;color:#92400e}.empty{text-align:center;padding:25px;color:var(--muted)}.hidden{display:none!important}
+.session-row{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.session-row .field{min-width:210px;flex:1}.release{padding:12px;border-radius:9px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;margin-top:12px;line-height:1.5;overflow-wrap:anywhere}.release.ready{background:#dcfce7;border-color:#bbf7d0;color:#166534}
+@media(max-width:800px){.school-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.subjects{grid-template-columns:repeat(2,minmax(0,1fr))}.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.head{align-items:flex-start}.brand{font-size:15px}.school-grid,.grid{grid-template-columns:1fr}.panel{padding:15px}main{margin-top:14px}.subjects{grid-template-columns:1fr 1fr}}
+@media print{body{background:#fff}.no-print,header,main>.panel:not(#admitCard){display:none!important}main{margin:0;padding:0}.panel{box-shadow:none;border:0;margin:0;padding:0}#admitCard{display:block!important}.card-actions{display:none!important}}
+</style>
+</head>
+<body>
+<header><div class="head"><div class="brand">🎓 BIHAR ACADEMIC BATTLE</div><button id="logoutBtn" class="logout" type="button">Logout ↗</button></div></header>
+<main>
+  <div id="loading" class="panel">⏳ स्कूल की जानकारी लोड हो रही है...</div>
+  <div id="page" class="hidden">
+    <section class="panel">
+      <h1>School Dashboard</h1>
+      <p class="sub">स्वागत है, <strong id="welcomeName">School</strong> — विद्यार्थी Registration, Session और Admit Card यहाँ मैनेज करें।</p>
+      <div class="school-grid">
+        <div class="info"><small>School Name</small><strong id="schoolName">—</strong></div>
+        <div class="info"><small>School Code</small><strong id="schoolCode">—</strong></div>
+        <div class="info"><small>School Status</small><strong id="schoolStatus">—</strong></div>
+        <div class="info"><small>Login Email</small><strong id="schoolEmail">—</strong></div>
+      </div>
+      <div class="stats"><span class="pill">Session Students: <span id="studentCount">0</span></span><span class="pill">Academic Session: <span id="sessionBadge">2026–2027</span></span></div>
+    </section>
+    <section class="panel no-print">
+      <h2>📅 Academic Session और Admit Card</h2>
+      <div class="session-row">
+        <div class="field"><label for="sessionSelect">Academic Session चुनें</label><select id="sessionSelect"><option value="2026-2027">2026–2027</option><option value="2027-2028">2027–2028</option><option value="2028-2029">2028–2029</option><option value="2029-2030">2029–2030</option></select></div>
+        <button class="primary" id="loadSessionBtn" type="button">Load Session Data</button>
+        <button class="secondary" id="printAllBtn" type="button">Print Available Admit Cards</button>
+      </div>
+      <div id="releaseStatus" class="release">Admit Card status जाँचा जा रहा है...</div>
+      <p class="hint">Admit Card केवल तभी उपलब्ध होगा जब Admin चुने गए Session के लिए उसे Publish करेगा। पुराने रिकॉर्ड जिनमें session नहीं है, उन्हें 2026–2027 में दिखाया जाएगा।</p>
+      <div id="sessionMessage" class="message" role="status"></div>
+    </section>
+    <section class="panel no-print" id="formPanel">
+      <h2 id="formTitle">📝 विद्यार्थी Registration</h2>
+      <p class="hint">विद्यार्थी का डेटा चुने गए Academic Session के साथ सेव होगा। एक विद्यार्थी एक या कई Battles चुन सकता है।</p>
+      <form id="studentForm">
+        <input type="hidden" id="studentId">
+        <div class="grid">
+          <div class="field"><label for="studentName">विद्यार्थी का पूरा नाम *</label><input id="studentName" required maxlength="100" autocomplete="name"></div>
+          <div class="field"><label for="fatherName">पिता/अभिभावक का नाम *</label><input id="fatherName" required maxlength="100"></div>
+          <div class="field"><label for="className">कक्षा *</label><select id="className" required><option value="">कक्षा चुनें</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option><option>8</option><option>9</option><option>10</option><option>11</option><option>12</option></select></div>
+          <div class="field"><label for="rollNumber">रोल नंबर</label><input id="rollNumber" maxlength="30"></div>
+          <div class="field"><label for="dob">जन्मतिथि</label><input id="dob" type="date"></div>
+          <div class="field"><label for="gender">लिंग</label><select id="gender"><option value="">चुनें</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+          <div class="field"><label for="studentMobile">विद्यार्थी/अभिभावक मोबाइल</label><input id="studentMobile" type="tel" inputmode="tel" maxlength="15" pattern="[-0-9+() ]{7,15}" title="7 से 15 अक्षर दर्ज करें।"></div>
+          <div class="field"><label for="studentEmail">ईमेल (यदि हो)</label><input id="studentEmail" type="email" maxlength="150"></div>
+          <div class="field"><label for="medium">पढ़ाई का माध्यम</label><select id="medium"><option value="">चुनें</option><option>Hindi</option><option>English</option><option>Urdu</option><option>Other</option></select></div>
+        </div>
+        <div style="margin-top:18px"><strong>Choose Battle Subject(s) *</strong>
+          <div class="subjects" id="subjects">
+            <label class="subject"><input type="checkbox" value="Bihar GK">📖 Bihar GK</label>
+            <label class="subject"><input type="checkbox" value="Mathematics">➗ Mathematics</label>
+            <label class="subject"><input type="checkbox" value="Science">⚗️ Science</label>
+            <label class="subject"><input type="checkbox" value="Computer">💻 Computer</label>
+            <label class="subject"><input type="checkbox" value="English">📚 English</label>
+            <label class="subject"><input type="checkbox" value="Hindi">✍️ Hindi</label>
+            <label class="subject"><input type="checkbox" value="SST">🌍 SST</label>
+            <label class="subject"><input type="checkbox" value="Drawing">🎨 Drawing</label>
+          </div>
+        </div>
+        <div class="actions"><button id="submitBtn" class="primary" type="submit">Submit Registration</button><button id="resetBtn" class="secondary" type="button">Clear Form</button></div>
+        <div id="formMessage" class="message" role="status" aria-live="polite"></div>
+      </form>
+    </section>
+    <section class="panel no-print">
+      <h2>👨‍🎓 Registered Students — <span id="tableSession">2026–2027</span></h2>
+      <div class="table-wrap"><table><thead><tr><th>विद्यार्थी</th><th>कक्षा / रोल</th><th>Battle Subjects</th><th>स्थिति</th><th>Admit Card</th><th>Actions</th></tr></thead><tbody id="studentsBody"><tr><td colspan="6" class="empty">डेटा लोड हो रहा है...</td></tr></tbody></table></div>
+      <div id="listMessage" class="message" role="status"></div>
+    </section>
+    <section class="panel hidden" id="admitCard">
+      <div id="admitCardContent"></div>
+      <div class="actions card-actions no-print"><button class="primary" id="printCardBtn" type="button">Print / Save PDF</button><button class="secondary" id="closeCardBtn" type="button">Close Admit Card</button></div>
+    </section>
+  </div>
+  <div id="pageError" class="message" role="alert"></div>
+</main>
+
+<script type="module">
+import { auth, db } from "./firebase.js";
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+import { ref, get, set, push, onValue } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+const $ = id => document.getElementById(id);
+const form = $("studentForm");
+let currentUser = null;
+let school = {};
+let registrations = {};
+let allRegistrations = {};
+let unsubscribeStudents = null;
+let unsubscribeRelease = null;
+let activeSession = $("sessionSelect").value;
+let admitCardsPublished = false;
+let currentReleaseSettings = {};
+
+function message(id, text, type = "error") {
+  const el = $(id);
+  el.textContent = text;
+  el.className = "message " + type;
+}
+function clearMessage(id) {
+  $(id).textContent = "";
+  $(id).className = "message";
+}
+function safeText(value) {
+  return value == null || value === "" ? "—" : String(value);
+}
+function setText(id, value) {
+  $(id).textContent = safeText(value);
+}
+function selectedSubjects() {
+  return [...document.querySelectorAll("#subjects input:checked")].map(el => el.value);
+}
+function sessionOf(student) {
+  return student.session || student.academicSession || "2026-2027";
+}
+function sessionLabel(session) {
+  return String(session || "").replace("-", "–");
+}
+function escapeHTML(value) {
+  return String(value ?? "—").replace(/[&<>"']/g, ch => ({
+    "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+  })[ch]);
+}
+function friendlyError(error) {
+  console.error(error);
+  const code = error?.code || "";
+  const text = String(error?.message || "");
+  if (code === "PERMISSION_DENIED" || code === "permission_denied" || text.includes("PERMISSION_DENIED")) {
+    return "Firebase Permission Denied. Database Rules में schools/{schoolUid}/studentRegistrations के लिए owner read/write permission और admitCardSettings/{session} के लिए read permission जाँचें।";
+  }
+  if (code === "auth/network-request-failed") return "Network error: इंटरनेट, Firebase project और firebase.js configuration जाँचें।";
+  if (code === "auth/unauthorized-domain") return "Firebase Authentication → Settings → Authorized domains में localhost, 127.0.0.1 और अपना Netlify domain जोड़ें।";
+  return text || "कार्य पूरा नहीं हुआ। Browser Console और Firebase Rules जाँचें।";
+}
+
+function renderStudents() {
+  const body = $("studentsBody");
+  const rows = Object.entries(registrations).filter(([, student]) => student && typeof student === "object")
+    .sort((a, b) => String(b[1].updatedAt || b[1].createdAt || "").localeCompare(String(a[1].updatedAt || a[1].createdAt || "")));
+  $("studentCount").textContent = rows.length;
+  body.replaceChildren();
+
+  if (!rows.length) {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 6;
+    td.className = "empty";
+    td.textContent = "इस Session में विद्यार्थी नहीं हैं। Registration करें या दूसरा Session चुनें।";
+    tr.appendChild(td);
+    body.appendChild(tr);
+    return;
+  }
+
+  for (const [id, student] of rows) {
+    const tr = document.createElement("tr");
+    const values = [
+      `${safeText(student.studentName)}\nअभिभावक: ${safeText(student.fatherName)}`,
+      `कक्षा ${safeText(student.className)}\nरोल: ${safeText(student.rollNumber)}`,
+      Array.isArray(student.subjects) ? student.subjects.join(", ") : safeText(student.subjects),
+      student.status || "pending"
+    ];
+    values.forEach((value, index) => {
+      const td = document.createElement("td");
+      td.style.whiteSpace = "pre-line";
+      if (index === 3) {
+        const badge = document.createElement("span");
+        badge.className = "status";
+        badge.textContent = value;
+        td.appendChild(badge);
+      } else td.textContent = value;
+      tr.appendChild(td);
+    });
+
+    const cardTd = document.createElement("td");
+    const cardBtn = document.createElement("button");
+    cardBtn.type = "button";
+    cardBtn.className = "primary mini";
+    cardBtn.textContent = admitCardsPublished ? "View / Print" : "Not Released";
+    cardBtn.disabled = !admitCardsPublished;
+    cardBtn.addEventListener("click", () => showAdmitCard(id, student));
+    cardTd.appendChild(cardBtn);
+    tr.appendChild(cardTd);
+
+    const actions = document.createElement("td");
+    const edit = document.createElement("button");
+    edit.type = "button";
+    edit.className = "secondary mini";
+    edit.textContent = "Edit";
+    edit.addEventListener("click", () => editStudent(id, student));
+    const del = document.createElement("button");
+    del.type = "button";
+    del.className = "danger mini";
+    del.textContent = "Delete";
+    del.addEventListener("click", () => deleteStudent(id));
+    actions.append(edit, del);
+    tr.appendChild(actions);
+    body.appendChild(tr);
+  }
+}
+
+function applySession() {
+  activeSession = $("sessionSelect").value;
+  $("sessionBadge").textContent = sessionLabel(activeSession);
+  $("tableSession").textContent = sessionLabel(activeSession);
+  registrations = {};
+  for (const [id, student] of Object.entries(allRegistrations || {})) {
+    if (student && sessionOf(student) === activeSession) registrations[id] = student;
+  }
+  renderStudents();
+  clearMessage("sessionMessage");
+  resetForm();
+}
+
+function editStudent(id, student) {
+  $("studentId").value = id;
+  $("studentName").value = student.studentName || "";
+  $("fatherName").value = student.fatherName || "";
+  $("className").value = String(student.className || "");
+  $("rollNumber").value = student.rollNumber || "";
+  $("dob").value = student.dob || "";
+  $("gender").value = student.gender || "";
+  $("studentMobile").value = student.studentMobile || "";
+  $("studentEmail").value = student.studentEmail || "";
+  $("medium").value = student.medium || "";
+  document.querySelectorAll("#subjects input").forEach(el => {
+    el.checked = Array.isArray(student.subjects) && student.subjects.includes(el.value);
+  });
+  $("formTitle").textContent = "✏️ विद्यार्थी विवरण Edit / Update";
+  $("submitBtn").textContent = "Update Registration";
+  $("formPanel").scrollIntoView({behavior:"smooth", block:"start"});
+}
+
+function resetForm() {
+  form.reset();
+  $("studentId").value = "";
+  $("formTitle").textContent = "📝 विद्यार्थी Registration";
+  $("submitBtn").textContent = "Submit Registration";
+  clearMessage("formMessage");
+}
+$("resetBtn").addEventListener("click", resetForm);
+$("loadSessionBtn").addEventListener("click", () => { applySession(); watchReleaseStatus(); });
+$("sessionSelect").addEventListener("change", () => { applySession(); watchReleaseStatus(); });
+
+form.addEventListener("submit", async event => {
+  event.preventDefault();
+  clearMessage("formMessage");
+  if (!currentUser) return message("formMessage", "पहले स्कूल अकाउंट से Login करें।");
+  if (school.status && school.status !== "active") return message("formMessage", "स्कूल अकाउंट सक्रिय नहीं है। Administrator से संपर्क करें।");
+  const subjects = selectedSubjects();
+  if (!subjects.length) return message("formMessage", "कम से कम एक Battle Subject चुनें।");
+
+  const submitBtn = $("submitBtn");
+  const editingId = $("studentId").value;
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Saving...";
+
+  try {
+    const now = new Date().toISOString();
+    const existing = editingId ? allRegistrations[editingId] : null;
+    if (editingId && !existing) throw new Error("यह विद्यार्थी रिकॉर्ड उपलब्ध नहीं है। सूची Refresh करके फिर प्रयास करें।");
+
+    const record = {
+      studentName: $("studentName").value.trim(),
+      fatherName: $("fatherName").value.trim(),
+      className: $("className").value,
+      rollNumber: $("rollNumber").value.trim(),
+      dob: $("dob").value,
+      gender: $("gender").value,
+      studentMobile: $("studentMobile").value.trim(),
+      studentEmail: $("studentEmail").value.trim(),
+      medium: $("medium").value,
+      subjects,
+      session: activeSession,
+      academicSession: activeSession,
+      schoolUid: currentUser.uid,
+      schoolName: school.schoolName || school.name || "",
+      schoolCode: school.schoolCode || "",
+      schoolEmail: currentUser.email || "",
+      status: existing?.status || "pending",
+      updatedAt: now,
+      createdAt: existing?.createdAt || now
+    };
+
+    const studentRef = editingId
+      ? ref(db, `schools/${currentUser.uid}/studentRegistrations/${editingId}`)
+      : push(ref(db, `schools/${currentUser.uid}/studentRegistrations`));
+
+    record.studentId = studentRef.key;
+    await set(studentRef, record);
+    message("formMessage", editingId ? "विद्यार्थी का विवरण अपडेट हो गया।" : "Registration सफल! विद्यार्थी रिकॉर्ड सेव हो गया।", "success");
+    resetForm();
+  } catch (error) {
+    message("formMessage", friendlyError(error));
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = $("studentId").value ? "Update Registration" : "Submit Registration";
+  }
+});
+
+async function deleteStudent(id) {
+  const student = registrations[id];
+  if (!student || !currentUser) return;
+  if (!confirm(`क्या आप ${student.studentName || "इस विद्यार्थी"} का Registration हटाना चाहते हैं?`)) return;
+  try {
+    await set(ref(db, `schools/${currentUser.uid}/studentRegistrations/${id}`), null);
+    message("listMessage", "Registration Delete हो गया।", "success");
+  } catch (error) {
+    message("listMessage", friendlyError(error));
+  }
+}
+
+function watchReleaseStatus() {
+  if (unsubscribeRelease) unsubscribeRelease();
+  unsubscribeRelease = null;
+  admitCardsPublished = false;
+  currentReleaseSettings = {};
+  $("releaseStatus").className = "release";
+  $("releaseStatus").textContent = "Admin की release setting जाँची जा रही है...";
+  renderStudents();
+
+  unsubscribeRelease = onValue(ref(db, `admitCardSettings/${activeSession}`), snapshot => {
+    const setting = snapshot.val() || {};
+    currentReleaseSettings = setting;
+    admitCardsPublished = setting.published === true;
+    if (admitCardsPublished) {
+      $("releaseStatus").className = "release ready";
+      $("releaseStatus").textContent = `✅ Session ${sessionLabel(activeSession)} के Admit Cards जारी हैं। Exam Date: ${setting.examDate || "—"} | Exam Centre: ${setting.examCentre || "—"}`;
+    } else {
+      $("releaseStatus").className = "release";
+      $("releaseStatus").textContent = `⏳ Session ${sessionLabel(activeSession)} के Admit Cards अभी Admin ने जारी नहीं किए हैं।`;
+    }
+    renderStudents();
+  }, error => {
+    console.error("Admit card release check:", error);
+    admitCardsPublished = false;
+    $("releaseStatus").className = "release";
+    $("releaseStatus").textContent = friendlyError(error);
+    renderStudents();
+  });
+}
+
+function showAdmitCard(id, student) {
+  if (!admitCardsPublished) return message("sessionMessage", "Admin ने इस Session के Admit Cards अभी जारी नहीं किए हैं।");
+  const subjects = Array.isArray(student.subjects) ? student.subjects.join(", ") : safeText(student.subjects);
+  const fields = [
+    ["Student Name", student.studentName],
+    ["Admit Card ID", id],
+    ["Father/Guardian", student.fatherName],
+    ["Class", student.className],
+    ["Roll Number", student.rollNumber],
+    ["Date of Birth", student.dob],
+    ["School", school.schoolName || school.name],
+    ["School Code", school.schoolCode],
+    ["Battle(s)", subjects]
+  ];
+  const article = document.createElement("article");
+  article.style.cssText = "max-width:760px;margin:0 auto;border:3px solid #4338ca;border-radius:16px;overflow:hidden;font-family:Arial,sans-serif;color:#172033;background:#fff";
+  const header = document.createElement("div");
+  header.style.cssText = "padding:22px;background:#eff6ff;text-align:center;border-bottom:2px solid #1e3a8a";
+  const title = document.createElement("h1");
+  title.textContent = "🎓 BIHAR ACADEMIC BATTLE";
+  const sub = document.createElement("h2");
+  sub.textContent = "STUDENT ADMIT CARD";
+  const session = document.createElement("p");
+  session.textContent = `Academic Session: ${sessionLabel(activeSession)}`;
+  const exam = document.createElement("p");
+  exam.textContent = `Exam Date: ${currentReleaseSettings.examDate || "—"} | Exam Centre: ${currentReleaseSettings.examCentre || "—"}`;
+  header.append(title, sub, session, exam);
+  const details = document.createElement("div");
+  details.style.cssText = "display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 22px";
+  fields.forEach(([label, value]) => {
+    const item = document.createElement("div");
+    item.style.cssText = "padding:8px;overflow-wrap:anywhere";
+    const strong = document.createElement("strong");
+    strong.textContent = label + ": ";
+    item.append(strong, document.createTextNode(safeText(value)));
+    if (label === "Battle(s)") item.style.gridColumn = "1 / -1";
+    details.appendChild(item);
+  });
+  const footer = document.createElement("div");
+  footer.style.cssText = "display:flex;justify-content:space-between;gap:24px;margin:38px 22px 0";
+  ["School Seal", "Authorized Signature"].forEach(label => {
+    const el = document.createElement("div");
+    el.style.cssText = "border-top:1px solid #334155;padding-top:7px";
+    el.textContent = label;
+    footer.appendChild(el);
+  });
+  const note = document.createElement("p");
+  note.style.cssText = "font-size:12px;text-align:center;margin:22px";
+  note.textContent = "Please bring this admit card to the examination / battle venue.";
+  article.append(header, details, footer, note);
+  $("admitCardContent").replaceChildren(article);
+  $("admitCard").classList.remove("hidden");
+  $("admitCard").scrollIntoView({behavior:"smooth"});
+}
+$("printCardBtn").addEventListener("click", () => window.print());
+$("closeCardBtn").addEventListener("click", () => $("admitCard").classList.add("hidden"));
+
+$("printAllBtn").addEventListener("click", () => {
+  if (!admitCardsPublished) return message("sessionMessage", "Admin ने इस Session के Admit Cards अभी जारी नहीं किए हैं।");
+  const rows = Object.entries(registrations);
+  if (!rows.length) return message("sessionMessage", "इस session में कोई विद्यार्थी नहीं है।");
+  const win = window.open("", "_blank");
+  if (!win) return message("sessionMessage", "Popup blocked है। Browser में इस site के लिए popups allow करें।");
+
+  const doc = win.document;
+  doc.open();
+  doc.write("<!doctype html><html lang='en'><head><meta charset='utf-8'><title>Admit Cards</title><style>*{box-sizing:border-box}body{font:14px Arial;margin:0;padding:12px;color:#172033}.toolbar{text-align:center;margin-bottom:15px}.toolbar button{background:#1e3a8a;color:white;padding:10px 15px;border:0;border-radius:8px}.card{border:2px solid #4338ca;margin:0 auto 16px;max-width:850px;padding:18px;page-break-after:always;break-after:page}.stripe{height:10px;background:linear-gradient(90deg,#0f766e,#2563eb,#7c3aed,#db2777,#f59e0b)}h1,h2{text-align:center;color:#1e3a8a}.details{display:grid;grid-template-columns:1fr 1fr;gap:10px}.details div{padding:9px;border:1px solid #e2e8f0;overflow-wrap:anywhere}.wide{grid-column:1/-1}footer{display:flex;justify-content:space-between;margin:40px 10px 20px}footer span{border-top:1px solid #334155;padding-top:7px;width:170px;text-align:center}@page{size:A4;margin:10mm}@media print{.toolbar{display:none}.card{max-width:none;min-height:250mm;margin:0}.card:last-child{page-break-after:auto;break-after:auto}}</style></head><body>");
+  const toolbar = doc.createElement("div");
+  toolbar.className = "toolbar";
+  const printBtn = doc.createElement("button");
+  printBtn.textContent = "Print / Save all as PDF";
+  printBtn.onclick = () => win.print();
+  const info = doc.createElement("p");
+  info.textContent = `${rows.length} admit cards — ${school.schoolName || school.name || "School"}`;
+  toolbar.append(printBtn, info);
+  doc.body.appendChild(toolbar);
+
+  rows.forEach(([id, student]) => {
+    const card = doc.createElement("article");
+    card.className = "card";
+    const stripe = doc.createElement("div");
+    stripe.className = "stripe";
+    const h1 = doc.createElement("h1");
+    h1.textContent = "🎓 BIHAR ACADEMIC BATTLE";
+    const h2 = doc.createElement("h2");
+    h2.textContent = "STUDENT ADMIT CARD";
+    const session = doc.createElement("p");
+    session.textContent = `Academic Session: ${sessionLabel(activeSession)}`;
+    const exam = doc.createElement("p");
+    exam.textContent = `Exam Date: ${currentReleaseSettings.examDate || "—"} | Exam Centre: ${currentReleaseSettings.examCentre || "—"}`;
+    const schoolLine = doc.createElement("p");
+    schoolLine.textContent = `School: ${school.schoolName || school.name || "School"} | School Code: ${school.schoolCode || "—"}`;
+    const details = doc.createElement("div");
+    details.className = "details";
+    const items = [
+      ["Student Name",student.studentName],["Admit Card ID",id],
+      ["Father/Guardian",student.fatherName],["Class",student.className],
+      ["Roll Number",student.rollNumber],["Date of Birth",student.dob],
+      ["Battle(s)",Array.isArray(student.subjects)?student.subjects.join(", "):student.subjects]
+    ];
+    items.forEach(([label,value]) => {
+      const cell = doc.createElement("div");
+      if (label === "Battle(s)") cell.className = "wide";
+      const b = doc.createElement("b");
+      b.textContent = label + ": ";
+      cell.append(b, doc.createTextNode(safeText(value)));
+      details.appendChild(cell);
+    });
+    const footer = doc.createElement("footer");
+    ["School Seal","Authorized Signature"].forEach(text => {
+      const span = doc.createElement("span");
+      span.textContent = text;
+      footer.appendChild(span);
+    });
+    card.append(stripe,h1,h2,session,exam,schoolLine,doc.createElement("hr"),details,footer);
+    doc.body.appendChild(card);
+  });
+  doc.close();
+  message("sessionMessage", `${rows.length} Admit Cards तैयार हैं। नई विंडो में Print / Save all as PDF दबाएँ।`, "success");
+});
+
+$("logoutBtn").addEventListener("click", async () => {
+  try {
+    if (unsubscribeStudents) unsubscribeStudents();
+    if (unsubscribeRelease) unsubscribeRelease();
+    await signOut(auth);
+    location.replace("./login.html");
+  } catch (error) {
+    alert("Logout failed: " + (error?.message || error));
+  }
+});
+
+onAuthStateChanged(auth, async user => {
+  if (!user) {
+    location.replace("./login.html");
+    return;
+  }
+  currentUser = user;
+  try {
+    const snapshot = await get(ref(db, `schools/${user.uid}`));
+    if (!snapshot.exists()) {
+      throw new Error("इस Login UID से schools/{UID} पर स्कूल प्रोफाइल नहीं मिला। सुनिश्चित करें कि स्कूल प्रोफाइल का key Firebase Auth UID के बराबर है।");
+    }
+    school = snapshot.val();
+    if (school.status && school.status !== "active") {
+      throw new Error("स्कूल अकाउंट सक्रिय नहीं है। Administrator से संपर्क करें।");
+    }
+    setText("welcomeName", school.schoolName || school.name || user.email);
+    setText("schoolName", school.schoolName || school.name);
+    setText("schoolCode", school.schoolCode);
+    setText("schoolStatus", school.status || "active");
+    setText("schoolEmail", school.loginEmail || school.schoolEmail || user.email);
+    $("loading").classList.add("hidden");
+    $("page").classList.remove("hidden");
+
+    if (unsubscribeStudents) unsubscribeStudents();
+    unsubscribeStudents = onValue(ref(db, `schools/${user.uid}/studentRegistrations`), snapshot => {
+      allRegistrations = snapshot.val() || {};
+      applySession();
+    }, error => message("listMessage", friendlyError(error)));
+
+    watchReleaseStatus();
+  } catch (error) {
+    console.error("Dashboard load error:", error);
+    $("loading").classList.add("hidden");
+    message("pageError", friendlyError(error));
+  }
+});
+</script>
+</body>
+</html>

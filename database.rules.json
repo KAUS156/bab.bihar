@@ -1,0 +1,27 @@
+{
+  "rules": {
+    "schools": {
+      "$schoolUid": {
+        ".read": "auth != null && (auth.uid === $schoolUid || root.child('admins').child(auth.uid).val() === true)",
+        ".write": "auth != null && (auth.uid === $schoolUid || root.child('admins').child(auth.uid).val() === true)",
+        "studentRegistrations": {
+          "$studentId": {
+            ".validate": "!newData.exists() || (newData.hasChildren(['studentName','fatherName','className','session','schoolUid']) && newData.child('schoolUid').val() === $schoolUid)"
+          }
+        }
+      }
+    },
+    "admitCardSettings": {
+      "$session": {
+        ".read": "auth != null",
+        ".write": "auth != null && root.child('admins').child(auth.uid).val() === true"
+      }
+    },
+    "admins": {
+      "$uid": {
+        ".read": "auth != null && auth.uid === $uid",
+        ".write": false
+      }
+    }
+  }
+}
