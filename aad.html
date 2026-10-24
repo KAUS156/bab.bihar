@@ -1,0 +1,675 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102b67">
+<title>Exam Admin | Bihar Academic Battle</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5fb;color:#172033}
+header{background:linear-gradient(120deg,#102b67,#2563eb);color:white;padding:22px}
+header h1{margin:0;font-size:24px}
+header p{margin:8px 0 0}
+.container{max-width:1200px;margin:22px auto;padding:0 14px}
+.card{background:white;padding:20px;border-radius:14px;box-shadow:0 5px 20px #15274c12;margin-bottom:18px}
+h2{margin-top:0}
+label{display:block;font-weight:bold;margin:12px 0 6px}
+input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;font-size:15px}
+button{border:0;padding:11px 15px;border-radius:8px;background:#2563eb;color:white;font-weight:bold;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}
+.secondary{background:#475569}
+.approve{background:#15803d}
+.reject{background:#dc2626}
+.full{width:100%;margin-top:16px}
+#dashboard{display:none}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stat{background:#eff6ff;border-radius:12px;padding:17px}
+.stat span{display:block;color:#64748b;font-size:13px}
+.stat strong{display:block;color:#173b8c;font-size:27px;margin-top:8px}
+.toolbar{display:grid;grid-template-columns:2fr 1fr 1fr;gap:10px;margin:15px 0}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{padding:12px 10px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:14px}
+th{background:#eff6ff;color:#173b8c}
+.badge{display:inline-block;padding:5px 8px;border-radius:20px;font-size:12px;background:#e2e8f0}
+.submitted,.approved{background:#dcfce7;color:#166534}
+.inProgress,.pending{background:#fef3c7;color:#92400e}
+.rejected{background:#fee2e2;color:#991b1b}
+.unknown{background:#e2e8f0;color:#475569}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+.actions button{padding:8px 10px;font-size:12px}
+.small{color:#64748b;font-size:13px;line-height:1.5;overflow-wrap:anywhere}
+#detailModal{display:none;position:fixed;inset:0;background:#0f172acc;z-index:10;overflow:auto;padding:18px}
+.modal-box{max-width:850px;background:white;border-radius:14px;margin:20px auto;padding:22px}
+.detail-row{padding:12px 0;border-bottom:1px solid #e2e8f0;overflow-wrap:anywhere}
+.detail-row p{margin:7px 0}
+footer{text-align:center;color:#64748b;padding:25px}
+.error{color:#b91c1c!important}
+.success{color:#15803d!important}
+@media(max-width:700px){
+ .stats{grid-template-columns:repeat(2,1fr)}
+ .toolbar{grid-template-columns:1fr}
+ header h1{font-size:21px}
+ .card{padding:15px}
+ .modal-box{padding:15px;margin:5px auto}
+}
+</style>
+</head>
+
+<body>
+<header>
+<h1>BIHAR ACADEMIC BATTLE</h1>
+<p>Computer Examination — Admin Dashboard</p>
+</header>
+
+<main class="container">
+
+<section class="card" id="loginPanel">
+<h2>Admin Login</h2>
+<p class="small">अपने अधिकृत Firebase Admin Account से login करें।</p>
+
+<form id="loginForm">
+<label for="email">Admin Email</label>
+<input id="email" type="email" autocomplete="username" required>
+
+<label for="password">Password</label>
+<input id="password" type="password" autocomplete="current-password" required>
+
+<button class="full" id="loginBtn" type="submit">Login to Admin Panel</button>
+</form>
+<p id="loginMessage" class="small" role="status"></p>
+</section>
+
+<section id="dashboard">
+
+<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+<div>
+<h2 style="margin-bottom:5px">Admin Dashboard</h2>
+<div id="adminEmail" class="small"></div>
+</div>
+<div class="actions">
+<button id="refreshBtn">Refresh All</button>
+<button id="logoutBtn" class="secondary">Logout</button>
+</div>
+</div>
+<p id="statusMessage" class="small" role="status">Dashboard loading...</p>
+</div>
+
+<div class="card">
+<h2>Student Exam Approval</h2>
+<p class="small">
+Students की payment/exam requests computerExamApprovals path से लोड होंगी।
+Request देखकर Approve या Reject करें।
+</p>
+
+<div class="stats">
+<div class="stat"><span>Total Requests</span><strong id="approvalTotal">0</strong></div>
+<div class="stat"><span>Pending</span><strong id="approvalPending">0</strong></div>
+<div class="stat"><span>Approved</span><strong id="approvalApproved">0</strong></div>
+<div class="stat"><span>Rejected</span><strong id="approvalRejected">0</strong></div>
+</div>
+
+<p id="approvalMessage" class="small" role="status"></p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Student Name</th>
+<th>Student ID</th>
+<th>Class</th>
+<th>Amount</th>
+<th>UTR</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="approvalBody">
+<tr><td colspan="7">Loading requests...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+<div class="stats">
+<div class="stat"><span>Total Attempts</span><strong id="totalCount">0</strong></div>
+<div class="stat"><span>Submitted</span><strong id="submittedCount">0</strong></div>
+<div class="stat"><span>In Progress</span><strong id="progressCount">0</strong></div>
+<div class="stat"><span>Average Score</span><strong id="averageScore">0%</strong></div>
+</div>
+
+<div class="card">
+<h2>Student Examination Records</h2>
+
+<div class="toolbar">
+<input id="searchBox" placeholder="Search name, UID, class, exam..." aria-label="Search records">
+
+<select id="classFilter" aria-label="Filter by class">
+<option value="">All Classes</option>
+<option value="1">Class 1</option><option value="2">Class 2</option>
+<option value="3">Class 3</option><option value="4">Class 4</option>
+<option value="5">Class 5</option><option value="6">Class 6</option>
+<option value="7">Class 7</option><option value="8">Class 8</option>
+<option value="9">Class 9</option><option value="10">Class 10</option>
+<option value="11">Class 11</option><option value="12">Class 12</option>
+</select>
+
+<select id="statusFilter" aria-label="Filter by status">
+<option value="">All Statuses</option>
+<option value="submitted">Submitted</option>
+<option value="inProgress">In Progress</option>
+<option value="pending">Pending</option>
+</select>
+</div>
+
+<p id="resultCount" class="small">0 records</p>
+
+<div class="table-wrap">
+<table>
+<thead>
+<tr>
+<th>Student Name</th><th>Class</th><th>Exam</th><th>Score</th>
+<th>Status</th><th>Started At</th><th>Action</th>
+</tr>
+</thead>
+<tbody id="resultsBody">
+<tr><td colspan="7">Loading...</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+
+</section>
+</main>
+
+<div id="detailModal" role="dialog" aria-modal="true" aria-labelledby="detailHeading">
+<div class="modal-box">
+<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">
+<h2 id="detailHeading">Student Exam Details</h2>
+<button id="closeModal" class="secondary">Close</button>
+</div>
+<div id="detailContent"></div>
+</div>
+</div>
+
+<footer>Bihar Academic Battle · Examination Administration</footer>
+
+<script type="module">
+import {auth,db} from "./firebase.js";
+
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+  ref,get,update
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+const $ = id => document.getElementById(id);
+
+let adminUser = null;
+let allRecords = [];
+let allApprovals = [];
+let loading = false;
+
+function setMessage(id,text,error=false){
+  $(id).textContent = text;
+  $(id).className = "small " + (error ? "error" : "success");
+}
+
+function formatDate(value){
+  if(value === "" || value == null) return "—";
+  let n = Number(value);
+  let date;
+
+  if(Number.isFinite(n) && String(value).trim() !== ""){
+    if(String(Math.trunc(n)).length === 10) n *= 1000;
+    date = new Date(n);
+  } else {
+    date = new Date(value);
+  }
+
+  return Number.isNaN(date.getTime()) ? String(value) : date.toLocaleString("en-IN");
+}
+
+function normalStatus(value){
+  const s = String(value || "unknown").toLowerCase();
+  if(s === "in_progress" || s === "inprogress" || s === "in progress") return "inProgress";
+  return s;
+}
+
+function setDashboard(visible){
+  $("loginPanel").style.display = visible ? "none" : "block";
+  $("dashboard").style.display = visible ? "block" : "none";
+}
+
+async function verifyAdmin(user){
+  const snapshot = await get(ref(db,"admins/" + user.uid));
+  return snapshot.exists() && snapshot.val() === true;
+}
+
+onAuthStateChanged(auth,async user=>{
+  adminUser = user || null;
+
+  if(!user){
+    setDashboard(false);
+    $("loginBtn").disabled = false;
+    $("loginMessage").textContent = "Admin email और password से login करें।";
+    return;
+  }
+
+  $("loginBtn").disabled = true;
+  $("loginMessage").textContent = "Admin verification...";
+
+  try{
+    const allowed = await verifyAdmin(user);
+
+    if(!allowed){
+      setDashboard(false);
+      $("loginMessage").textContent =
+        "Access denied. admins/" + user.uid + " का value boolean true होना चाहिए।";
+      await signOut(auth);
+      return;
+    }
+
+    setDashboard(true);
+    $("adminEmail").textContent = "Logged in: " + (user.email || "");
+    await loadAll();
+
+  }catch(error){
+    setDashboard(false);
+    $("loginMessage").textContent = "Firebase verification error: " + error.message;
+    console.error("Admin authentication/verification error:",error);
+  }finally{
+    $("loginBtn").disabled = false;
+  }
+});
+
+$("loginForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+  $("loginBtn").disabled = true;
+  $("loginMessage").textContent = "Logging in...";
+
+  try{
+    await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);
+  }catch(error){
+    $("loginMessage").textContent = "Login error: " + error.message;
+    console.error("Login error:",error);
+  }finally{
+    $("loginBtn").disabled = false;
+  }
+});
+
+$("logoutBtn").addEventListener("click",async()=>{
+  try{
+    await signOut(auth);
+    adminUser = null;
+    allRecords = [];
+    allApprovals = [];
+    $("resultsBody").replaceChildren();
+    $("approvalBody").replaceChildren();
+    setMessage("statusMessage","आप logout हो गए हैं।");
+  }catch(error){
+    setMessage("statusMessage","Logout error: " + error.message,true);
+  }
+});
+
+$("refreshBtn").addEventListener("click",loadAll);
+$("searchBox").addEventListener("input",renderTable);
+$("classFilter").addEventListener("change",renderTable);
+$("statusFilter").addEventListener("change",renderTable);
+
+async function loadAll(){
+  if(!adminUser || loading) return;
+
+  loading = true;
+  $("refreshBtn").disabled = true;
+
+  try{
+    const allowed = await verifyAdmin(adminUser);
+    if(!allowed) throw new Error("Admin permission नहीं है। admins/" + adminUser.uid + " की जाँच करें।");
+
+    setMessage("statusMessage","Approval requests लोड हो रही हैं...");
+    try{
+      await loadApprovals();
+    }catch(error){
+      console.error("computerExamApprovals read failed:",error);
+      throw new Error("computerExamApprovals read failed: " + error.message);
+    }
+
+    setMessage("statusMessage","Exam results लोड हो रहे हैं...");
+    try{
+      await loadResults();
+    }catch(error){
+      console.error("computerExamAttempts read failed:",error);
+      throw new Error("computerExamAttempts read failed: " + error.message);
+    }
+
+    setMessage("statusMessage","Dashboard refresh complete.");
+  }catch(error){
+    console.error("Dashboard load error:",error);
+    setMessage("statusMessage","Firebase error: " + error.message,true);
+  }finally{
+    loading = false;
+    $("refreshBtn").disabled = false;
+  }
+}
+
+/* STUDENT APPROVAL REQUESTS */
+async function loadApprovals(){
+  const snapshot = await get(ref(db,"computerExamApprovals"));
+  const raw = snapshot.exists() ? snapshot.val() : {};
+
+  allApprovals = Object.entries(raw || {}).map(([key,value])=>({
+    ...(value || {}),
+    approvalKey:key,
+    studentId:String(value?.studentId || key),
+    studentName:String(value?.studentName || "Name not provided"),
+    className:String(value?.className ?? value?.class ?? ""),
+    amount:value?.amount ?? "—",
+    utr:String(value?.utr || "—"),
+    status:normalStatus(value?.status || "pending")
+  }));
+
+  renderApprovals();
+}
+
+function renderApprovals(){
+  const body = $("approvalBody");
+  body.replaceChildren();
+
+  $("approvalTotal").textContent = allApprovals.length;
+  $("approvalPending").textContent = allApprovals.filter(a=>a.status==="pending").length;
+  $("approvalApproved").textContent = allApprovals.filter(a=>a.status==="approved").length;
+  $("approvalRejected").textContent = allApprovals.filter(a=>a.status==="rejected").length;
+
+  if(!allApprovals.length){
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 7;
+    td.textContent = "कोई request नहीं मिली। Student की request computerExamApprovals में सेव होनी चाहिए।";
+    tr.append(td);
+    body.append(tr);
+    return;
+  }
+
+  allApprovals.forEach(student=>{
+    const tr = document.createElement("tr");
+
+    [
+      student.studentName,
+      student.studentId,
+      student.className ? "Class " + student.className : "—",
+      student.amount === "—" ? "—" : "₹" + student.amount,
+      student.utr
+    ].forEach(value=>{
+      const td = document.createElement("td");
+      td.textContent = String(value);
+      tr.append(td);
+    });
+
+    const statusTd = document.createElement("td");
+    const badge = document.createElement("span");
+    badge.className = "badge " + student.status;
+    badge.textContent = student.status;
+    statusTd.append(badge);
+    tr.append(statusTd);
+
+    const actionTd = document.createElement("td");
+    const actions = document.createElement("div");
+    actions.className = "actions";
+
+    if(student.status !== "approved"){
+      const approve = document.createElement("button");
+      approve.className = "approve";
+      approve.textContent = "Approve";
+      approve.addEventListener("click",()=>changeApproval(student,"approved"));
+      actions.append(approve);
+    }
+
+    if(student.status !== "rejected"){
+      const reject = document.createElement("button");
+      reject.className = "reject";
+      reject.textContent = "Reject";
+      reject.addEventListener("click",()=>changeApproval(student,"rejected"));
+      actions.append(reject);
+    }
+
+    if(student.status === "approved" || student.status === "rejected"){
+      const reset = document.createElement("button");
+      reset.className = "secondary";
+      reset.textContent = "Set Pending";
+      reset.addEventListener("click",()=>changeApproval(student,"pending"));
+      actions.append(reset);
+    }
+
+    actionTd.append(actions);
+    tr.append(actionTd);
+    body.append(tr);
+  });
+}
+
+async function changeApproval(student,newStatus){
+  if(!adminUser) return;
+  if(!["pending","approved","rejected"].includes(newStatus)) return;
+
+  const promptText = newStatus === "approved"
+    ? "क्या आप इस student को exam की अनुमति देना चाहते हैं?"
+    : newStatus === "rejected"
+      ? "क्या आप इस request को reject करना चाहते हैं?"
+      : "क्या आप status को Pending करना चाहते हैं?";
+
+  if(!confirm(promptText)) return;
+
+  try{
+    if(!await verifyAdmin(adminUser)) throw new Error("Admin permission नहीं है।");
+
+    await update(ref(db,"computerExamApprovals/" + student.approvalKey),{
+      status:newStatus,
+      updatedAt:Date.now(),
+      approvedBy:adminUser.uid
+    });
+
+    setMessage("approvalMessage",student.studentName + " का status " + newStatus + " कर दिया गया।");
+    await loadApprovals();
+  }catch(error){
+    console.error("Approval update error:",error);
+    setMessage("approvalMessage","Approval update failed: " + error.message,true);
+  }
+}
+
+/* EXAM RESULTS */
+async function loadResults(){
+  if(!adminUser) return;
+
+  const snapshot = await get(ref(db,"computerExamAttempts"));
+  const raw = snapshot.exists() ? snapshot.val() : {};
+  const records = [];
+
+  for(const [uid,attempts] of Object.entries(raw || {})){
+    if(!attempts || typeof attempts !== "object") continue;
+
+    const singleAttempt =
+      "studentName" in attempts ||
+      "examTitle" in attempts ||
+      "status" in attempts;
+
+    const entries = singleAttempt
+      ? [[attempts.attemptId || "legacy",attempts]]
+      : Object.entries(attempts);
+
+    for(const [attemptId,attempt] of entries){
+      if(!attempt || typeof attempt !== "object") continue;
+
+      records.push({
+        ...attempt,
+        uid:attempt.uid || uid,
+        attemptId:attempt.attemptId || attemptId,
+        studentName:attempt.studentName || "Name not provided",
+        className:String(attempt.className ?? attempt.class ?? ""),
+        examTitle:attempt.examTitle || "Computer Exam",
+        status:normalStatus(attempt.status),
+        totalQuestions:Number(attempt.totalQuestions) || 50
+      });
+    }
+  }
+
+  allRecords = records;
+  renderTable();
+}
+
+function renderTable(){
+  const search = $("searchBox").value.trim().toLowerCase();
+  const classFilter = $("classFilter").value;
+  const statusFilter = $("statusFilter").value;
+
+  const filtered = allRecords.filter(record=>{
+    const text = [
+      record.studentName,record.uid,record.className,
+      record.examTitle,record.status,record.attemptId
+    ].join(" ").toLowerCase();
+
+    return (!search || text.includes(search)) &&
+      (!classFilter || record.className === classFilter) &&
+      (!statusFilter || record.status === statusFilter);
+  });
+
+  $("totalCount").textContent = allRecords.length;
+  $("submittedCount").textContent = allRecords.filter(r=>r.status==="submitted").length;
+  $("progressCount").textContent = allRecords.filter(r=>r.status==="inProgress").length;
+
+  const submitted = allRecords.filter(r=>
+    r.status==="submitted" && r.score!=null && Number.isFinite(Number(r.score))
+  );
+
+  const average = submitted.length
+    ? submitted.reduce((sum,r)=>sum+Number(r.score)/Math.max(1,Number(r.totalQuestions)||1),0)/submitted.length*100
+    : 0;
+
+  $("averageScore").textContent = average.toFixed(1) + "%";
+  $("resultCount").textContent = filtered.length + " records";
+
+  const body = $("resultsBody");
+  body.replaceChildren();
+
+  if(!filtered.length){
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 7;
+    td.textContent = "कोई record नहीं मिला।";
+    tr.append(td);
+    body.append(tr);
+    return;
+  }
+
+  filtered.forEach(record=>{
+    const tr = document.createElement("tr");
+
+    [
+      record.studentName,
+      record.className ? "Class " + record.className : "—",
+      record.examTitle,
+      record.score==null ? "—" : record.score + " / " + record.totalQuestions
+    ].forEach(value=>{
+      const td = document.createElement("td");
+      td.textContent = String(value);
+      tr.append(td);
+    });
+
+    const statusCell = document.createElement("td");
+    const badge = document.createElement("span");
+    badge.className = "badge " +
+      (record.status==="submitted" ? "submitted" :
+       record.status==="inProgress" ? "inProgress" :
+       record.status==="pending" ? "pending" : "unknown");
+    badge.textContent = record.status;
+    statusCell.append(badge);
+    tr.append(statusCell);
+
+    const dateCell = document.createElement("td");
+    dateCell.textContent = formatDate(record.startedAt);
+    tr.append(dateCell);
+
+    const actionCell = document.createElement("td");
+    const viewButton = document.createElement("button");
+    viewButton.textContent = "View Details";
+    viewButton.addEventListener("click",()=>openDetails(record));
+    actionCell.append(viewButton);
+    tr.append(actionCell);
+    body.append(tr);
+  });
+}
+
+function openDetails(record){
+  const content = $("detailContent");
+  content.replaceChildren();
+
+  const details = [
+    ["Student Name",record.studentName],
+    ["Class",record.className],
+    ["Exam",record.examTitle],
+    ["Student UID",record.uid],
+    ["Attempt ID",record.attemptId],
+    ["Status",record.status],
+    ["Score",record.score==null ? "Not submitted" : record.score+" / "+record.totalQuestions],
+    ["Started At",formatDate(record.startedAt)],
+    ["Submitted At",formatDate(record.submittedAt)],
+    ["Payment Status",record.paymentStatus || "—"]
+  ];
+
+  details.forEach(([label,value])=>{
+    const row = document.createElement("div");
+    row.className = "detail-row";
+    const title = document.createElement("strong");
+    title.textContent = label;
+    const p = document.createElement("p");
+    p.textContent = value==null || value==="" ? "—" : String(value);
+    row.append(title,p);
+    content.append(row);
+  });
+
+  const heading = document.createElement("h3");
+  heading.textContent = "Saved Answers";
+  content.append(heading);
+
+  const answers = record.answers || {};
+  const keys = Object.keys(answers).sort((a,b)=>Number(a)-Number(b));
+
+  if(!keys.length){
+    const p = document.createElement("p");
+    p.textContent = "कोई saved answer नहीं मिला।";
+    content.append(p);
+  }else{
+    keys.forEach(key=>{
+      const row = document.createElement("div");
+      row.className = "detail-row";
+      const p = document.createElement("p");
+      const answer = answers[key];
+      p.textContent = "Question " + (Number(key)+1) + ": " +
+        (typeof answer==="object" ? JSON.stringify(answer) : "Selected option " + (Number(answer)+1));
+      row.append(p);
+      content.append(row);
+    });
+  }
+
+  $("detailModal").style.display = "block";
+}
+
+$("closeModal").addEventListener("click",()=>{$("detailModal").style.display="none";});
+
+$("detailModal").addEventListener("click",event=>{
+  if(event.target === $("detailModal")) $("detailModal").style.display="none";
+});
+
+document.addEventListener("keydown",event=>{
+  if(event.key==="Escape") $("detailModal").style.display="none";
+});
+</script>
+</body>
+</html>

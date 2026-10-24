@@ -1,0 +1,13 @@
+{
+  "name": "bihar-academic-battle",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "firebase": "^13.1.0",
+    "firebase-admin": "^13.0.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "netlify-cli": "^27.14.2"
+  }
+}

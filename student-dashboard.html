@@ -1,0 +1,205 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102d69">
+<title>My Academic Battle | Bihar Academic Battle</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5f9;color:#172554}
+header{background:linear-gradient(120deg,#0b1f49,#1d4ed8);color:white;padding:22px 16px}
+.head{max-width:1120px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-size:clamp(19px,4vw,27px);font-weight:900}
+header p{margin:7px 0 0;color:#dbeafe;font-size:13px}
+button{font-family:inherit}
+.logout{background:white;color:#1d4ed8;border:0;padding:11px 16px;border-radius:9px;font-weight:bold;cursor:pointer}
+main{max-width:1120px;margin:25px auto;padding:0 16px}
+.profile{background:white;padding:22px;border-radius:18px;box-shadow:0 5px 22px #0f172a0a;display:flex;align-items:center;gap:17px;flex-wrap:wrap}
+.avatar{width:82px;height:82px;border-radius:50%;object-fit:cover;background:#dbeafe}
+.profile-info{flex:1;min-width:190px}
+.profile h1{font-size:23px;margin:0 0 9px;color:#102d69}
+.profile p{margin:5px 0;color:#64748b;overflow-wrap:anywhere;font-size:14px}
+.verified{display:inline-block;background:#dcfce7;color:#166534;border-radius:30px;padding:6px 10px;font-size:12px;font-weight:bold;margin-top:5px}
+h2.section{margin:30px 0 16px;font-size:23px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.battle{background:white;padding:22px;border-radius:16px;border:1px solid #e2e8f0;text-decoration:none;color:#172554;transition:transform .2s,box-shadow .2s}
+.battle:hover{transform:translateY(-3px);box-shadow:0 10px 25px #0f172a12}
+.emoji{font-size:36px}
+.battle h3{color:#163d89;margin:13px 0 8px}
+.battle p{color:#64748b;font-size:14px;line-height:1.6;min-height:42px}
+.start{display:inline-block;color:#2563eb;font-size:14px;font-weight:bold;margin-top:6px}
+.notice{background:#eff6ff;border:1px solid #dbeafe;color:#1e40af;border-radius:14px;padding:17px;margin-top:23px;line-height:1.7;font-size:14px}
+.status{background:white;border-radius:12px;padding:18px;margin-bottom:18px;line-height:1.7}
+.hidden{display:none!important}
+footer{text-align:center;color:#64748b;padding:30px 12px;font-size:12px}
+@media(max-width:480px){.profile{padding:18px}.avatar{width:68px;height:68px}}
+</style>
+</head>
+
+<body>
+<header>
+  <div class="head">
+    <div>
+      <div class="brand">BIHAR ACADEMIC BATTLE</div>
+      <p>Bihar's Academic Battle Platform</p>
+    </div>
+    <button id="logoutBtn" class="logout">Logout ↗</button>
+  </div>
+</header>
+
+<main>
+  <div id="status" class="status">आपकी प्रोफाइल लोड हो रही है...</div>
+
+  <section id="profile" class="profile hidden">
+    <img id="avatar" class="avatar" alt="Student profile photo">
+    <div class="profile-info">
+      <h1 id="studentName">Student</h1>
+      <p id="studentEmail"></p>
+      <p id="studentUid"></p>
+      <span class="verified">✓ Logged in successfully</span>
+    </div>
+  </section>
+
+  <section id="battlesSection" class="hidden">
+    <h2 class="section">🏆 Choose Your Battle</h2>
+
+    <div class="grid">
+      <a class="battle" href="/battles/bihar-gk.html">
+        <div class="emoji">🏛️</div>
+        <h3>Bihar GK</h3>
+        <p>Know Your State, Know Your Pride</p>
+        <span class="start">Start Battle →</span>
+      </a>
+
+      <a class="battle" href="/mathematics.html">
+        <div class="emoji">➗</div>
+        <h3>Mathematics</h3>
+        <p>Think • Solve • Win</p>
+        <span class="start">Start Battle →</span>
+      </a>
+
+      <a class="battle" href="/science.html">
+        <div class="emoji">🔬</div>
+        <h3>Science</h3>
+        <p>Explore • Discover • Excel</p>
+        <span class="start">Start Battle →</span>
+      </a>
+
+      <a class="battle" href="/computer.html">
+        <div class="emoji">💻</div>
+        <h3>Computer</h3>
+        <p>Code • Logic • Future</p>
+        <span class="start">Start Battle →</span>
+      </a>
+
+      <a class="battle" href="/english.html">
+        <div class="emoji">📚</div>
+        <h3>English</h3>
+        <p>Read • Think • Express</p>
+        <span class="start">Start Battle →</span>
+      </a>
+
+      <a class="battle" href="/hindi.html">
+        <div class="emoji">✍️</div>
+        <h3>Hindi</h3>
+        <p>पढ़ो • समझो • लिखो</p>
+        <span class="start">Start Battle →</span>
+      </a>
+    </div>
+
+    <div class="notice">
+      <strong>आपका Academic Dashboard</strong><br>
+      आपकी प्रोफाइल आपके Firebase UID से जुड़ी है। अगली बार उसी अकाउंट से लॉगिन करने पर यही प्रोफाइल खुलेगी।
+    </div>
+  </section>
+</main>
+
+<footer>© 2026 Bihar Academic Battle | All Rights Reserved</footer>
+
+<script type="module">
+import {initializeApp,getApps} from
+  "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {getAuth,onAuthStateChanged,signOut} from
+  "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {getDatabase,ref,get} from
+  "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+const firebaseConfig={
+  apiKey:"AIzaSyBO6-Qq6Yh6E4ECx9BXGySqzC8J2zdHYzs",
+  authDomain:"babbihar-23fcc.firebaseapp.com",
+  projectId:"babbihar-23fcc",
+  storageBucket:"babbihar-23fcc.firebasestorage.app",
+  messagingSenderId:"310810953638",
+  appId:"1:310810953638:web:cbaafbf43b5cfd2dffb167",
+  measurementId:"G-43J5L0K1MZ",
+  databaseURL:"https://babbihar-23fcc-default-rtdb.firebaseio.com/"
+};
+
+const app=getApps().length?getApps()[0]:initializeApp(firebaseConfig);
+const auth=getAuth(app);
+const db=getDatabase(app);
+
+const statusBox=document.getElementById("status");
+const profileBox=document.getElementById("profile");
+const battlesSection=document.getElementById("battlesSection");
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){
+    window.location.replace("/student-login.html");
+    return;
+  }
+
+  statusBox.textContent="आपकी प्रोफाइल लोड हो रही है...";
+
+  try{
+    const snapshot=await get(ref(db,"studentProfiles/"+user.uid));
+
+    if(!snapshot.exists()){
+      statusBox.textContent=
+        "प्रोफाइल नहीं मिली। कृपया Logout करके दोबारा लॉगिन करें।";
+      return;
+    }
+
+    const data=snapshot.val();
+
+    document.getElementById("studentName").textContent=
+      data.name||user.displayName||"Student";
+
+    document.getElementById("studentEmail").textContent=
+      "Email: "+(data.email||user.email||"Not available");
+
+    document.getElementById("studentUid").textContent=
+      "Student ID: "+user.uid;
+
+    const avatar=document.getElementById("avatar");
+    avatar.src=data.photoURL||user.photoURL||
+      "https://www.gravatar.com/avatar/?d=mp&s=150";
+
+    statusBox.classList.add("hidden");
+    profileBox.classList.remove("hidden");
+    battlesSection.classList.remove("hidden");
+
+  }catch(error){
+    console.error("Dashboard Profile Error:",error);
+    statusBox.textContent=
+      "प्रोफाइल लोड नहीं हुई। Internet और Firebase Database Rules जाँचें।";
+  }
+});
+
+document.getElementById("logoutBtn").addEventListener("click",async()=>{
+  try{
+    await signOut(auth);
+    window.location.replace("/student-login.html");
+  }catch(error){
+    console.error("Logout Error:",error);
+    alert("Logout नहीं हुआ। दोबारा कोशिश करें।");
+  }
+});
+</script>
+</body>
+</html>

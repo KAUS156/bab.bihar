@@ -21,11 +21,10 @@ export const firebaseConfig = {
   messagingSenderId: "310810953638",
   appId: "1:310810953638:web:cbaafbf43b5cfd2dffb167",
   measurementId: "G-43J5L0K1MZ",
-  databaseURL:
-    "https://babbihar-23fcc-default-rtdb.firebaseio.com/"
+  databaseURL: "https://babbihar-23fcc-default-rtdb.firebaseio.com/"
 };
 
-const app = getApps().length
+const app = getApps().length > 0
   ? getApp()
   : initializeApp(firebaseConfig);
 

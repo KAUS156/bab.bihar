@@ -1,0 +1,413 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102b67">
+<title>Student Result | Bihar Academic Battle</title>
+
+<style>
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:Arial,sans-serif;
+  background:#f1f5fb;color:#172033
+}
+header{
+  background:linear-gradient(120deg,#102b67,#2563eb);
+  color:#fff;padding:25px 16px;text-align:center
+}
+header h1{margin:0;font-size:25px}
+header p{margin:9px 0 0}
+.container{max-width:900px;margin:25px auto;padding:0 14px}
+.card{
+  background:#fff;border-radius:15px;padding:22px;
+  margin-bottom:18px;box-shadow:0 5px 22px #15274c12
+}
+h2{margin-top:0}
+label{display:block;font-weight:bold;margin:14px 0 7px}
+input{
+  width:100%;padding:13px;border:1px solid #cbd5e1;
+  border-radius:9px;font-size:16px
+}
+button{
+  border:0;border-radius:9px;padding:12px 16px;
+  background:#2563eb;color:white;font-weight:bold;
+  cursor:pointer;font-size:15px
+}
+button:disabled{opacity:.6;cursor:not-allowed}
+.secondary{background:#475569}
+#resultPanel{display:none}
+.message{font-size:14px;line-height:1.6;overflow-wrap:anywhere}
+.error{color:#b91c1c}
+.success{color:#15803d}
+.muted{color:#64748b;font-size:13px;line-height:1.6}
+.grid{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px
+}
+.info{
+  background:#f8fafc;border:1px solid #e2e8f0;
+  border-radius:10px;padding:14px;min-width:0
+}
+.info span{display:block;font-size:13px;color:#64748b;margin-bottom:7px}
+.info strong{font-size:16px;overflow-wrap:anywhere}
+.score-box{
+  background:linear-gradient(120deg,#eff6ff,#dbeafe);
+  padding:22px;border-radius:13px;text-align:center;margin:18px 0
+}
+.score{font-size:36px;font-weight:bold;color:#173b8c}
+.percent{font-size:20px;font-weight:bold;margin-top:7px}
+.badge{
+  display:inline-block;border-radius:30px;padding:6px 12px;
+  font-size:13px;font-weight:bold;background:#e2e8f0
+}
+.badge.submitted{background:#dcfce7;color:#166534}
+.badge.pending,.badge.inProgress{background:#fef3c7;color:#92400e}
+.badge.rejected{background:#fee2e2;color:#991b1b}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:500px}
+th,td{padding:11px;text-align:left;border-bottom:1px solid #e2e8f0;font-size:14px}
+th{background:#eff6ff;color:#173b8c}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+footer{text-align:center;color:#64748b;padding:25px}
+@media(max-width:550px){
+  .grid{grid-template-columns:1fr}
+  .card{padding:16px}
+  header h1{font-size:21px}
+}
+@media print{
+  body{background:#fff}
+  header,.search-card,.no-print,footer{display:none!important}
+  .container{max-width:100%;margin:0;padding:0}
+  .card{box-shadow:none;border:1px solid #ddd;break-inside:avoid}
+  #resultPanel{display:block!important}
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>BIHAR ACADEMIC BATTLE</h1>
+  <p>Student Result Portal · अपना परीक्षा परिणाम देखें</p>
+</header>
+
+<main class="container">
+
+  <section class="card search-card">
+    <h2>Check Your Result</h2>
+    <p class="muted">
+      अपना Student ID दर्ज करें। आपके ID से जुड़े उपलब्ध परीक्षा रिकॉर्ड दिखाए जाएँगे।
+    </p>
+
+    <form id="resultForm">
+      <label for="studentId">Student ID</label>
+      <input
+        id="studentId"
+        type="text"
+        placeholder="अपना Student ID डालें"
+        autocomplete="off"
+        required
+      >
+      <button id="searchBtn" type="submit" style="width:100%;margin-top:15px">
+        Search Result
+      </button>
+    </form>
+
+    <p id="message" class="message" role="status"></p>
+  </section>
+
+  <section id="resultPanel" class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap">
+      <div>
+        <h2 style="margin-bottom:5px">Examination Result</h2>
+        <p class="muted" style="margin-top:0">Bihar Academic Battle</p>
+      </div>
+      <span id="statusBadge" class="badge">—</span>
+    </div>
+
+    <div class="grid">
+      <div class="info"><span>Student Name</span><strong id="studentName">—</strong></div>
+      <div class="info"><span>Student ID</span><strong id="displayStudentId">—</strong></div>
+      <div class="info"><span>Class</span><strong id="className">—</strong></div>
+      <div class="info"><span>Examination</span><strong id="examTitle">—</strong></div>
+      <div class="info"><span>Attempt ID</span><strong id="attemptId">—</strong></div>
+      <div class="info"><span>Submitted At</span><strong id="submittedAt">—</strong></div>
+    </div>
+
+    <div class="score-box">
+      <div class="muted">Examination Score</div>
+      <div id="score" class="score">—</div>
+      <div id="percentage" class="percent">—</div>
+      <p id="resultNote" class="message"></p>
+    </div>
+
+    <h3>Answer Summary</h3>
+    <p id="answerSummary" class="muted">
+      Answers केवल उपलब्ध होने पर दिखाए जाएँगे।
+    </p>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Question</th><th>Saved Answer</th></tr>
+        </thead>
+        <tbody id="answersBody">
+          <tr><td colspan="2">कोई answer नहीं है।</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="actions no-print">
+      <button type="button" id="printBtn">Print Result</button>
+      <button type="button" class="secondary" id="newSearchBtn">Search Another ID</button>
+    </div>
+  </section>
+
+</main>
+
+<footer>Bihar Academic Battle · Student Result Portal</footer>
+
+<script type="module">
+import {auth,db} from "../firebase.js";
+
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+  ref,get
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+const $ = id => document.getElementById(id);
+
+let currentUser = null;
+let searchInProgress = false;
+
+onAuthStateChanged(auth,user=>{
+  currentUser = user || null;
+});
+
+function setMessage(text,isError=false){
+  $("message").textContent = text;
+  $("message").className = "message " + (isError ? "error" : "success");
+}
+
+function displayDate(value){
+  if(value === null || value === undefined || value === "") return "—";
+
+  let n = Number(value);
+  let d;
+
+  if(Number.isFinite(n) && String(value).trim() !== ""){
+    if(String(Math.trunc(n)).length === 10) n *= 1000;
+    d = new Date(n);
+  }else{
+    d = new Date(value);
+  }
+
+  return Number.isNaN(d.getTime()) ? String(value) : d.toLocaleString("en-IN");
+}
+
+function statusName(value){
+  const status = String(value || "unknown").toLowerCase();
+  if(["in_progress","inprogress","in progress"].includes(status)) return "inProgress";
+  return status;
+}
+
+function setText(id,value){
+  $(id).textContent = value === null || value === undefined || value === ""
+    ? "—" : String(value);
+}
+
+function safeScore(record){
+  if(record.score === null || record.score === undefined || record.score === "") {
+    return null;
+  }
+  const score = Number(record.score);
+  return Number.isFinite(score) ? score : null;
+}
+
+function findStudentMatch(record,studentId){
+  // The exam code stores the student's Student ID in studentId.
+  // If no Student ID was saved in the attempt, don't assume the Firebase UID is the Student ID.
+  return String(record.studentId || "").trim().toLowerCase() ===
+         studentId.trim().toLowerCase();
+}
+
+function renderAnswers(record){
+  const body = $("answersBody");
+  body.replaceChildren();
+
+  const answers = record.answers || {};
+  const keys = Object.keys(answers).sort((a,b)=>Number(a)-Number(b));
+
+  if(!keys.length){
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 2;
+    td.textContent = "इस attempt में कोई saved answer उपलब्ध नहीं है।";
+    tr.append(td);
+    body.append(tr);
+    $("answerSummary").textContent = "कोई saved answer उपलब्ध नहीं है।";
+    return;
+  }
+
+  keys.forEach(key=>{
+    const tr = document.createElement("tr");
+    const q = document.createElement("td");
+    const a = document.createElement("td");
+
+    q.textContent = "Question " + (Number(key)+1);
+
+    const value = answers[key];
+    a.textContent = typeof value === "object"
+      ? JSON.stringify(value)
+      : String(value);
+
+    tr.append(q,a);
+    body.append(tr);
+  });
+
+  $("answerSummary").textContent = keys.length + " saved answers मिले।";
+}
+
+function renderRecord(record){
+  $("resultPanel").style.display = "block";
+
+  setText("studentName",record.studentName || "—");
+  setText("displayStudentId",record.studentId || $("studentId").value.trim());
+  setText("className",record.className ? "Class " + record.className : "—");
+  setText("examTitle",record.examTitle || "Computer Exam");
+  setText("attemptId",record.attemptId || "—");
+  setText("submittedAt",displayDate(record.submittedAt));
+
+  const status = statusName(record.status);
+  const badge = $("statusBadge");
+  badge.textContent = status;
+  badge.className = "badge " + status;
+
+  const score = safeScore(record);
+  const total = Number(record.totalQuestions) || 50;
+
+  if(status !== "submitted" || score === null){
+    $("score").textContent = score === null ? "Not available" : score + " / " + total;
+    $("percentage").textContent = status === "inProgress"
+      ? "Exam in progress"
+      : status === "pending"
+        ? "Result pending"
+        : "Score not available";
+
+    $("resultNote").textContent = status === "submitted"
+      ? "Score record में उपलब्ध नहीं है। कृपया school/admin से संपर्क करें।"
+      : "यह परीक्षा अभी submitted result के रूप में उपलब्ध नहीं है।";
+  }else{
+    const percent = total > 0 ? score / total * 100 : 0;
+    $("score").textContent = score + " / " + total;
+    $("percentage").textContent = percent.toFixed(1) + "%";
+    $("resultNote").textContent = "यह आपके database में सेव score के आधार पर दिखाया गया है।";
+  }
+
+  renderAnswers(record);
+}
+
+$("resultForm").addEventListener("submit",async event=>{
+  event.preventDefault();
+  if(searchInProgress) return;
+
+  const studentId = $("studentId").value.trim();
+  if(!studentId){
+    setMessage("कृपया Student ID दर्ज करें।",true);
+    return;
+  }
+
+  searchInProgress = true;
+  $("searchBtn").disabled = true;
+  $("resultPanel").style.display = "none";
+  setMessage("Result खोजा जा रहा है...");
+
+  try{
+    // Student result data is read from the same path as the Admin Dashboard.
+    // Firebase Rules must authorize this query. Publicly exposing all exam attempts is unsafe.
+    if(!currentUser){
+      throw new Error("Result देखने के लिए student login आवश्यक है।");
+    }
+
+    const snapshot = await get(ref(db,"computerExamAttempts"));
+
+    const raw = snapshot.exists() ? snapshot.val() : {};
+    const matches = [];
+
+    for(const [uid,attempts] of Object.entries(raw || {})){
+      if(!attempts || typeof attempts !== "object") continue;
+
+      const isSingleAttempt =
+        "studentName" in attempts ||
+        "examTitle" in attempts ||
+        "status" in attempts;
+
+      const entries = isSingleAttempt
+        ? [[attempts.attemptId || "legacy",attempts]]
+        : Object.entries(attempts);
+
+      for(const [key,value] of entries){
+        if(!value || typeof value !== "object") continue;
+
+        const record = {
+          ...value,
+          uid:value.uid || uid,
+          attemptId:value.attemptId || key
+        };
+
+        if(findStudentMatch(record,studentId)){
+          matches.push(record);
+        }
+      }
+    }
+
+    if(!matches.length){
+      setMessage(
+        "इस Student ID से जुड़ा result नहीं मिला। Student ID सही है या नहीं जाँचें।",
+        true
+      );
+      return;
+    }
+
+    // Prefer the most recently submitted/updated attempt.
+    matches.sort((a,b)=>{
+      const ta = Number(a.submittedAt || a.startedAt || a.updatedAt || 0);
+      const tb = Number(b.submittedAt || b.startedAt || b.updatedAt || 0);
+      return tb-ta;
+    });
+
+    renderRecord(matches[0]);
+    setMessage("Result मिल गया।");
+  }catch(error){
+    console.error("Result search failed:",error);
+    setMessage(
+      error.code === "PERMISSION_DENIED" ||
+      String(error.message).toLowerCase().includes("permission")
+        ? "Firebase Permission denied: इस page को computerExamAttempts पढ़ने की अनुमति नहीं है। सुरक्षित Student ID lookup के लिए backend/Cloud Function या अलग सुरक्षित result path चाहिए।"
+        : error.message || "Result लोड नहीं हो सका।",
+      true
+    );
+  }finally{
+    searchInProgress = false;
+    $("searchBtn").disabled = false;
+  }
+});
+
+$("printBtn").addEventListener("click",()=>{
+  window.print();
+});
+
+$("newSearchBtn").addEventListener("click",()=>{
+  $("resultPanel").style.display = "none";
+  $("studentId").value = "";
+  setMessage("");
+  $("studentId").focus();
+});
+</script>
+</body>
+</html>

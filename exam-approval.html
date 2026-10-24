@@ -1,0 +1,227 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Exam Approval | Bihar Academic Battle</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f1f5fb;color:#172033}
+header{background:#102b67;color:white;padding:20px}
+main{max-width:1000px;margin:24px auto;padding:16px}
+.card{background:white;padding:20px;border-radius:14px;margin-bottom:18px;box-shadow:0 4px 18px #00000010}
+input,select,button{padding:11px;border-radius:8px;border:1px solid #ccd5e4;font:inherit}
+button{border:0;cursor:pointer;color:white;font-weight:bold;margin:3px}
+.approve{background:#15803d}.reject{background:#dc2626}
+.refresh{background:#1d4ed8}
+table{width:100%;border-collapse:collapse;min-width:600px}
+th,td{padding:12px;text-align:left;border-bottom:1px solid #e5e7eb}
+th{background:#eef3ff}
+.tablewrap{overflow:auto}
+.status{font-weight:bold;text-transform:capitalize}
+.pending{color:#b45309}.approved{color:#15803d}.rejected{color:#dc2626}
+#message{margin:12px 0}
+</style>
+</head>
+<body>
+<header>
+<h2>BIHAR ACADEMIC BATTLE</h2>
+<p>Computer Exam — Admin Approval</p>
+</header>
+
+<main>
+<section class="card" id="loginBox">
+<h3>Admin Login</h3>
+<input id="email" type="email" placeholder="Admin email">
+<input id="password" type="password" placeholder="Password">
+<button class="refresh" id="loginBtn">Login</button>
+</section>
+
+<section class="card" id="panel" hidden>
+<h3>Student Approval Requests</h3>
+<button class="refresh" id="refreshBtn">Refresh</button>
+<button class="reject" id="logoutBtn">Logout</button>
+<div id="message" role="status"></div>
+<div class="tablewrap">
+<table>
+<thead>
+<tr>
+<th>Student</th><th>Student ID</th><th>Class</th>
+<th>Status</th><th>Action</th>
+</tr>
+</thead>
+<tbody id="rows">
+<tr><td colspan="5">Loading...</td></tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+
+<script type="module">
+import { initializeApp } from
+"https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
+
+import {
+ getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+ getDatabase, ref, get, set, update
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+// Apne Firebase project ki existing config yahan paste karein.
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "babbihar-23fcc.firebaseapp.com",
+  databaseURL: "https://babbihar-23fcc-default-rtdb.firebaseio.com/",
+  projectId: "babbihar-23fcc",
+  storageBucket: "babbihar-23fcc.firebasestorage.app",
+  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+
+const $ = id => document.getElementById(id);
+let adminReady = false;
+
+function message(text, error=false) {
+  $("message").textContent = text;
+  $("message").style.color = error ? "#dc2626" : "#15803d";
+}
+
+async function verifyAdmin(user) {
+  const snap = await get(ref(db, "admins/" + user.uid));
+  return snap.exists() && snap.val() === true;
+}
+
+onAuthStateChanged(auth, async user => {
+  adminReady = false;
+  $("panel").hidden = true;
+  $("loginBox").hidden = !!user;
+
+  if (!user) return;
+
+  try {
+    if (!(await verifyAdmin(user))) {
+      message("Access denied: यह account Admin नहीं है।", true);
+      await signOut(auth);
+      $("loginBox").hidden = false;
+      return;
+    }
+
+    adminReady = true;
+    $("panel").hidden = false;
+    await loadRequests();
+  } catch (e) {
+    message("Admin verification failed: " + e.message, true);
+  }
+});
+
+$("loginBtn").addEventListener("click", async () => {
+  try {
+    await signInWithEmailAndPassword(
+      auth, $("email").value.trim(), $("password").value
+    );
+  } catch (e) {
+    alert("Login failed: " + e.message);
+  }
+});
+
+$("logoutBtn").addEventListener("click", () => signOut(auth));
+$("refreshBtn").addEventListener("click", loadRequests);
+
+async function loadRequests() {
+  if (!auth.currentUser || !adminReady) return;
+
+  $("rows").innerHTML =
+    '<tr><td colspan="5">Loading...</td></tr>';
+
+  try {
+    const snap = await get(ref(db, "computerExamApprovals"));
+
+    if (!snap.exists()) {
+      $("rows").innerHTML =
+        '<tr><td colspan="5">अभी कोई request नहीं है।</td></tr>';
+      return;
+    }
+
+    $("rows").innerHTML = "";
+
+    snap.forEach(child => {
+      const id = child.key;
+      const s = child.val() || {};
+      const status = String(s.status || "pending").toLowerCase();
+
+      const tr = document.createElement("tr");
+      const values = [
+        s.studentName || "N/A",
+        id,
+        s.className || "N/A"
+      ];
+
+      values.forEach(value => {
+        const td = document.createElement("td");
+        td.textContent = value;
+        tr.appendChild(td);
+      });
+
+      const statusTd = document.createElement("td");
+      statusTd.className = "status " + status;
+      statusTd.textContent = status;
+      tr.appendChild(statusTd);
+
+      const actionTd = document.createElement("td");
+
+      if (status === "pending") {
+        const approve = document.createElement("button");
+        approve.className = "approve";
+        approve.textContent = "Approve";
+        approve.onclick = () => changeStatus(id, "approved");
+
+        const reject = document.createElement("button");
+        reject.className = "reject";
+        reject.textContent = "Reject";
+        reject.onclick = () => changeStatus(id, "rejected");
+
+        actionTd.append(approve, reject);
+      } else {
+        actionTd.textContent = "Status updated";
+      }
+
+      tr.appendChild(actionTd);
+      $("rows").appendChild(tr);
+    });
+  } catch (e) {
+    $("rows").innerHTML =
+      '<tr><td colspan="5">Data load failed.</td></tr>';
+    message("Firebase error: " + e.message, true);
+  }
+}
+
+async function changeStatus(studentId, status) {
+  if (!adminReady || !(await verifyAdmin(auth.currentUser))) {
+    message("Admin permission नहीं है।", true);
+    return;
+  }
+
+  try {
+    await update(ref(db, "computerExamApprovals/" + studentId), {
+      status,
+      updatedAt: Date.now(),
+      approvedBy: auth.currentUser.uid
+    });
+
+    message("Student status updated: " + status);
+    await loadRequests();
+  } catch (e) {
+    message("Update failed: " + e.message, true);
+  }
+}
+</script>
+</body>
+</html>

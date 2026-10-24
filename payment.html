@@ -1,0 +1,148 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#102b67">
+<title>Exam Fee Payment | Bihar Academic Battle</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f5fb;color:#172033;font-family:Arial,sans-serif}
+header{background:linear-gradient(120deg,#102b67,#2563eb);color:#fff;padding:22px}
+main{max-width:650px;margin:24px auto;padding:0 14px}
+.card{background:#fff;padding:22px;border-radius:16px;box-shadow:0 8px 25px #102b6715;margin-bottom:18px}
+h1{font-size:23px;margin:0}h2{margin-top:0}
+label{display:block;margin:13px 0 6px;font-weight:bold}
+input,select{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;font-size:16px}
+button{width:100%;border:0;border-radius:9px;padding:13px;background:#2563eb;color:#fff;font-weight:bold;font-size:16px;cursor:pointer;margin-top:16px}
+button:disabled{opacity:.5}
+.small{font-size:13px;line-height:1.6;color:#64748b}
+.notice{padding:12px;border-radius:9px;background:#eff6ff;line-height:1.6}
+#qr{display:block;width:min(100%,320px);height:auto;margin:15px auto;border:1px solid #e2e8f0;border-radius:12px}
+.price{text-align:center;font-size:30px;font-weight:bold;color:#173b8c}
+.status{padding:12px;border-radius:9px;background:#f8fafc;overflow-wrap:anywhere}
+</style>
+</head>
+<body>
+<header>
+<h1>BIHAR ACADEMIC BATTLE</h1>
+<p>Computer Examination — Fee Payment</p>
+</header>
+<main>
+<section class="card">
+<h2>Student Details</h2>
+<p id="authStatus" class="small">Firebase login जाँचा जा रहा है...</p>
+<form id="paymentForm">
+<label for="studentName">Student Name</label>
+<input id="studentName" maxlength="100" required>
+
+<label for="studentId">Student ID / Registration ID</label>
+<input id="studentId" maxlength="80" required>
+
+<label for="className">Class</label>
+<select id="className" required>
+<option value="">Select Class</option>
+<option>1</option><option>2</option><option>3</option>
+<option>4</option><option>5</option><option>6</option>
+<option>7</option><option>8</option><option>9</option>
+<option>10</option><option>11</option><option>12</option>
+</select>
+
+<div class="notice">
+<strong>Payment Instructions</strong><br>
+1. नीचे दिए QR code को UPI app से scan करें।<br>
+2. अपने UPI app में ₹150 का payment करें।<br>
+3. सफल payment के बाद UTR / UPI Transaction ID भरें।<br>
+4. Admin payment verify करेगा। Approval से पहले exam unlock नहीं होगा।
+</div>
+<p class="price">Exam Fee: ₹150</p>
+<img id="qr" src="/assets/upi-qr.png" alt="Bihar Academic Battle UPI QR Code">
+<p class="small" style="text-align:center">यदि QR नहीं दिख रहा, तो `assets/upi-qr.png` file और उसका filename जाँचें।</p>
+
+<label for="utr">UTR / UPI Transaction ID</label>
+<input id="utr" minlength="6" maxlength="80" autocomplete="off" required placeholder="Payment के बाद UTR भरें">
+
+<label for="paidAt">Payment Date and Time</label>
+<input id="paidAt" type="datetime-local" required>
+
+<button id="submitBtn" type="submit">Submit Payment for Verification</button>
+</form>
+</section>
+
+<section class="card">
+<h2>Payment Status</h2>
+<p id="status" class="status">अपनी payment request submit करने के बाद यहाँ status देख सकते हैं।</p>
+<button type="button" id="checkBtn">Check Payment Status</button>
+<p class="small">UTR submit करने से payment अपने-आप verified नहीं होता। कृपया admin approval की प्रतीक्षा करें।</p>
+</section>
+</main>
+
+<script type="module">
+import {auth} from "./firebase.js";
+import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+const $=id=>document.getElementById(id);
+let currentUser=null,lastRequestId="";
+
+const params=new URLSearchParams(location.search);
+$("studentName").value=params.get("studentName")||"";
+$("studentId").value=params.get("studentId")||"";
+$("className").value=params.get("className")||"";
+
+function showStatus(text){$("status").textContent=text;}
+
+async function callApi(name,method="GET",body){
+ if(!currentUser)throw Error("पहले student account से login करें।");
+ const token=await currentUser.getIdToken(true);
+ const response=await fetch("/.netlify/functions/"+name,{
+  method,
+  headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+  ...(body?{body:JSON.stringify(body)}:{})
+ });
+ const data=await response.json().catch(()=>({}));
+ if(!response.ok)throw Error(data.error||"Request failed ("+response.status+")");
+ return data;
+}
+onAuthStateChanged(auth,user=>{
+ currentUser=user||null;
+ $("authStatus").textContent=user
+  ?"Logged in: "+(user.email||user.uid)
+  :"Login जरूरी है। पहले student account से login करें।";
+ $("submitBtn").disabled=!user;
+ $("checkBtn").disabled=!user;
+});
+$("paymentForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ if(!currentUser)return showStatus("पहले Firebase account से login करें।");
+ const name=$("studentName").value.trim();
+ const studentId=$("studentId").value.trim();
+ const className=$("className").value;
+ const utr=$("utr").value.trim();
+ const paidAt=$("paidAt").value;
+ if(!name||!studentId||!className||!utr||!paidAt)return showStatus("सभी fields भरें।");
+ if(!/^[A-Za-z0-9-]{6,80}$/.test(utr))return showStatus("UTR में 6 से 80 तक अक्षर, अंक या hyphen डालें।");
+ $("submitBtn").disabled=true;showStatus("Payment request submit हो रही है...");
+ try{
+  const data=await callApi("submit-utr","POST",{studentName:name,studentId,className,utr,paidAt});
+  lastRequestId=data.requestId||"";
+  showStatus("Request submit हो गई। Status: Pending verification. Request ID: "+lastRequestId);
+ }catch(err){showStatus("Error: "+err.message);}
+ finally{$("submitBtn").disabled=false;}
+});
+$("checkBtn").addEventListener("click",async()=>{
+ if(!currentUser)return showStatus("पहले login करें।");
+ const id=$("studentId").value.trim(),cl=$("className").value;
+ if(!id||!cl)return showStatus("Student ID और Class भरें।");
+ $("checkBtn").disabled=true;
+ try{
+  const data=await callApi("check-exam-access?studentId="+encodeURIComponent(id)+"&className="+encodeURIComponent(cl));
+  if(data.allowed)showStatus("Payment approved. Exam access available.");
+  else if(data.status)showStatus("Payment status: "+data.status);
+  else showStatus("अभी approved payment नहीं मिला। Admin verification की प्रतीक्षा करें।");
+ }catch(err){showStatus("Status check error: "+err.message);}
+ finally{$("checkBtn").disabled=false;}
+});
+</script>
+</body>
+</html>

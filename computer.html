@@ -1,0 +1,694 @@
+
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#123c8c">
+<meta name="description" content="Bihar Academic Battle Computer Online Examination">
+<title>Computer Exam | Bihar Academic Battle</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#eef4ff;color:#172033}
+header{background:linear-gradient(120deg,#102b66,#2563eb);color:white;padding:24px 16px;text-align:center}
+header h1{margin:0;font-size:25px}
+header p{margin:8px 0 0}
+.container{max-width:850px;margin:22px auto;padding:0 12px}
+.card{background:#fff;border-radius:16px;padding:22px;margin-bottom:18px;box-shadow:0 5px 22px #17203312}
+h2{margin-top:0;color:#153c82}
+label{display:block;font-weight:bold;margin:15px 0 7px}
+input,select{width:100%;padding:13px;border:1px solid #c8d5eb;border-radius:9px;font-size:16px;background:white}
+button{border:0;border-radius:9px;padding:13px 18px;font-size:16px;font-weight:bold;cursor:pointer}
+.primary{background:#1d4ed8;color:white;width:100%;margin-top:18px}
+.secondary{background:#e4ecfb;color:#173b7a}
+button:disabled{opacity:.55;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:16px 0}
+.stat{text-align:center;padding:13px 5px;background:#edf4ff;border-radius:10px}
+.stat strong{display:block;font-size:21px;color:#1744a0}
+.muted{color:#64748b;line-height:1.6}
+.notice{padding:12px;border-radius:9px;background:#fff7df;color:#7b4c00;line-height:1.6}
+.error{padding:12px;border-radius:9px;background:#fee2e2;color:#991b1b;margin:12px 0;overflow-wrap:anywhere;line-height:1.5}
+.success{padding:20px;border-radius:12px;background:#dcfce7;color:#166534;text-align:center}
+.hidden{display:none!important}
+.question{padding:18px 0;border-bottom:1px solid #e2e8f0}
+.question p{font-weight:bold;line-height:1.5}
+.option{display:flex;gap:10px;align-items:flex-start;padding:10px;margin:7px 0;border:1px solid #dbe5f5;border-radius:8px;cursor:pointer;font-weight:normal}
+.option input{width:auto;margin-top:3px}
+.examtop{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:15px;font-weight:bold}
+.qr{display:block;width:min(100%,300px);height:auto;margin:12px auto;border:1px solid #dbe5f5;border-radius:12px}
+footer{text-align:center;padding:20px;color:#64748b}
+@media(max-width:500px){.card{padding:16px}.stats{gap:5px}.stat strong{font-size:18px}header h1{font-size:21px}}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>BIHAR ACADEMIC BATTLE</h1>
+  <p>Computer Online Examination</p>
+</header>
+
+<main class="container">
+
+  <section id="connectionError" class="card hidden">
+    <h2>Connection Problem</h2>
+    <div id="connectionMessage" class="error"></div>
+    <p class="muted">Internet, Firebase CDN और firebase.js configuration जाँचें।</p>
+    <button class="secondary" onclick="location.reload()">Retry Connection</button>
+  </section>
+
+  <section id="loginCard" class="card hidden">
+    <h2>Student Login Required</h2>
+    <p class="muted">परीक्षा के लिए अपने Firebase student account से login करें।</p>
+    <p id="loginMessage" class="notice">Checking login...</p>
+    <button class="secondary" onclick="location.href='./login.html'">Go to Login</button>
+  </section>
+
+  <section id="registrationCard" class="card hidden">
+    <h2>Student Examination Form</h2>
+    <p class="muted">सही जानकारी भरें। ₹150 payment Admin द्वारा verify और approve होने पर ही परीक्षा खुलेगी।</p>
+
+    <form id="studentForm">
+      <label for="studentName">Student Name / विद्यार्थी का नाम</label>
+      <input id="studentName" maxlength="100" autocomplete="name" required>
+
+      <label for="studentId">Student ID / विद्यार्थी आईडी</label>
+      <input id="studentId" maxlength="50" required placeholder="Registered Student ID">
+
+      <label for="className">Select Class / कक्षा चुनें</label>
+      <select id="className" required>
+        <option value="">Choose Class</option>
+        <option>Class 1</option><option>Class 2</option>
+        <option>Class 3</option><option>Class 4</option>
+        <option>Class 5</option><option>Class 6</option>
+        <option>Class 7</option><option>Class 8</option>
+        <option>Class 9</option><option>Class 10</option>
+      </select>
+
+      <div class="stats">
+        <div class="stat"><strong>50</strong>Questions</div>
+        <div class="stat"><strong>60 min</strong>Time Limit</div>
+        <div class="stat"><strong>₹150</strong>Exam Fee</div>
+      </div>
+
+      <div class="notice">
+        <strong>UPI Payment Instructions</strong><br>
+        1. नीचे QR code scan करके ₹150 भुगतान करें।<br>
+        2. Payment app में transaction सफल होने की पुष्टि करें।<br>
+        3. UTR / UPI transaction reference number दर्ज करें।<br>
+        4. Submit करने के बाद Admin approval की प्रतीक्षा करें।
+      </div>
+
+      <img id="qrImage" class="qr" alt="UPI payment QR code">
+      <p class="muted" style="text-align:center">UTR जमा करना अपने-आप payment approval नहीं है।</p>
+
+      <label for="utr">UTR / Transaction Reference Number</label>
+      <input id="utr" maxlength="80" required autocomplete="off" placeholder="UPI transaction reference number">
+
+      <div id="formError" class="error hidden" role="alert"></div>
+      <div id="paymentStatus" class="notice hidden" role="status"></div>
+
+      <button class="primary" id="utrButton" type="submit">Submit UTR for Verification</button>
+    </form>
+
+    <button class="secondary" id="checkApprovalButton" type="button" style="width:100%;margin-top:12px">Check Payment Approval</button>
+    <p class="muted">पहले UTR जमा कर चुके हैं? वही Student ID और Class चुनकर approval check करें।</p>
+  </section>
+
+  <section id="examCard" class="card hidden">
+    <div class="examtop">
+      <span id="examStudent"></span>
+      <span>Time Left: <span id="timer">60:00</span></span>
+    </div>
+    <h2>Computer Examination</h2>
+    <p class="muted">सभी प्रश्नों के उत्तर चुनें। समय समाप्त होने पर परीक्षा अपने आप submit होगी।</p>
+    <form id="examForm">
+      <div id="questions"></div>
+      <button type="submit" class="primary" id="submitButton">Submit Examination</button>
+    </form>
+  </section>
+
+  <section id="doneCard" class="card hidden">
+    <div class="success">
+      <h2>Examination Submitted</h2>
+      <p>आपकी परीक्षा submit हो गई है। Marks इस page पर नहीं दिखाए जाएँगे।</p>
+      <p id="doneStudent"></p>
+      <p>Thank you for participating in Bihar Academic Battle.</p>
+    </div>
+  </section>
+</main>
+
+<footer>© Bihar Academic Battle</footer>
+
+<script type="module">
+import {auth,db} from "./firebase.js";
+
+import {
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
+
+import {
+  ref,push,set,update,get
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
+
+const $ = id => document.getElementById(id);
+
+const FEE = 150;
+const TOTAL_QUESTIONS = 50;
+const EXAM_SECONDS = 3600;
+const QR_IMAGE = "./assets/upi-qr.png";
+
+let currentUser = null;
+let studentInfo = null;
+let questions = [];
+let attemptRef = null;
+let examStarted = false;
+let submitting = false;
+let timeLeft = EXAM_SECONDS;
+let timerInterval = null;
+
+$("qrImage").src = QR_IMAGE;
+
+function error(message) {
+  $("formError").textContent = message;
+  $("formError").classList.remove("hidden");
+}
+
+function clearError() {
+  $("formError").textContent = "";
+  $("formError").classList.add("hidden");
+}
+
+function status(message) {
+  $("paymentStatus").textContent = message;
+  $("paymentStatus").classList.remove("hidden");
+}
+
+function showConnectionError(e) {
+  console.error(e);
+  $("connectionError").classList.remove("hidden");
+  $("connectionMessage").textContent = e?.message || String(e);
+  $("registrationCard").classList.add("hidden");
+  $("loginCard").classList.add("hidden");
+}
+
+window.addEventListener("unhandledrejection", e => {
+  console.error(e.reason);
+});
+
+onAuthStateChanged(auth, user => {
+  currentUser = user;
+
+  if (!user) {
+    $("loginCard").classList.remove("hidden");
+    $("registrationCard").classList.add("hidden");
+    $("loginMessage").textContent = "Please login before taking the exam.";
+    return;
+  }
+
+  $("loginCard").classList.add("hidden");
+  $("registrationCard").classList.remove("hidden");
+  $("studentName").value = user.displayName || "";
+}, showConnectionError);
+
+
+/* Computer question bank for Classes 1–10.
+   Each topic has one correct answer and three distractors. */
+
+const topics = {
+"Class 1":[
+["Computer","An electronic machine that follows instructions","Animal","Plant","Toy"],
+["Monitor","Shows text and pictures","Prints on paper","Types letters","Records sound"],
+["Keyboard","Used to type letters and numbers","Shows pictures","Prints pages","Plays music"],
+["Mouse","Moves the pointer and selects items","Types paragraphs","Prints pages","Plays sound"],
+["Printer","Produces output on paper","Moves the pointer","Stores drinking water","Records voice"],
+["Speaker","Produces sound","Types letters","Scans paper","Moves the pointer"],
+["CPU","Processes instructions and data","Prints photographs","Types words","Displays paper"],
+["Spacebar","Creates a space between words","Deletes a file","Prints a page","Turns up sound"],
+["Computer table","Supports computer equipment","Stores computer programs online","Types letters","Scans photos"],
+["Computer lab","A place where computers are used for learning","A kitchen","A playground only","A bathroom"]
+],
+"Class 2":[
+["Input device","Sends data or instructions to a computer","Displays results only","Prints on paper only","Makes computer furniture"],
+["Output device","Presents results from a computer","Types instructions only","Scans only","Stores food"],
+["Microphone","Inputs sound into a computer","Prints text","Displays pictures","Moves the pointer"],
+["Scanner","Converts paper documents or images into digital form","Plays sound","Types by itself","Displays a web page"],
+["Enter key","Starts a new line or confirms an action in many programs","Creates a space only","Deletes the character to the left","Makes all letters capital"],
+["Backspace","Deletes the character to the left of the cursor","Prints the page","Makes a space","Opens the monitor"],
+["Caps Lock","Toggles capital-letter typing","Moves the pointer","Prints a file","Opens a website"],
+["Icon","A small picture representing an app, file or action","A type of printer paper","A power cable","A sound wave"],
+["Desktop","The main work area shown after signing in to many computers","A keyboard button","A printed page","A type of microphone"],
+["Shutdown","Turns off the computer through its power menu","Deletes every file automatically","Prints all documents","Opens every website"]
+],
+"Class 3":[
+["Operating system","Software that manages computer hardware and applications","A mouse pad","A printed document","A network cable"],
+["Paint program","Software used to draw and colour pictures","A sound device","A power supply","A printer cartridge"],
+["File","A named collection of stored information","A computer desk","A key on the keyboard","A type of speaker"],
+["Folder","A container used to organize files","A screen pixel","A printer button","A type of cable"],
+["Save","Stores changes to a file","Deletes the whole computer","Raises screen brightness only","Disconnects the keyboard"],
+["Recycle Bin","A place where deleted items may be kept temporarily","A place for new keyboards","A web browser","A printer setting"],
+["Web browser","Software used to visit websites","Software used only to draw","A keyboard key","A computer chair"],
+["Internet","A worldwide network of connected computer networks","A single computer screen","A type of printer","A local folder only"],
+["Password","A secret credential used to help protect an account","A public poster","A screen colour","A printer cable"],
+["Antivirus","Software designed to detect or help remove malicious software","A typing game","A monitor stand","A file extension"]
+],
+"Class 4":[
+["Operating system","System software that manages computer resources","A presentation slide","A picture file","A keyboard shortcut"],
+["Ctrl+C","Copies selected content","Pastes content","Cuts selected content","Prints a document"],
+["Ctrl+V","Pastes copied or cut content","Copies content","Selects all content","Closes every program"],
+["Ctrl+S","Saves the current file","Prints the current file","Opens a new browser","Deletes selected content"],
+["Presentation software","Creates slide-based presentations","Only scans paper","Only records sound","Only manages computer power"],
+["Web browser","Opens and displays websites","Calculates only sums","Types only offline letters","Scans documents"],
+["Spreadsheet","Organizes data in cells arranged in rows and columns","Plays music only","Draws only freehand pictures","Connects a monitor cable"],
+["Cell","The intersection of a spreadsheet row and column","A type of computer virus","A browser window","A printer tray"],
+["Search engine","Helps find information on the web","A keyboard button","A file storage box only","A monitor component"],
+["Cyber safety","Practices that help protect people and information online","A method of decorating a keyboard","A screen resolution","A type of printer ink"]
+],
+"Class 5":[
+["Spreadsheet formula","An expression used to calculate a result in a spreadsheet","A monitor stand","A web address only","A computer password"],
+["WWW","World Wide Web","World Wide Window","Wide World Work","Web World Word"],
+["Strong password","A long, unique password that is hard to guess","12345","Your name alone","The word password"],
+["Router","Forwards data between networks","Prints documents","Types letters","Displays images"],
+["Ctrl+A","Selects all content in the active area","Saves a file","Prints a file","Pastes content"],
+["Email attachment","A file sent along with an email","A computer power button","A browser theme","A spreadsheet row"],
+["Phishing","A deceptive attempt to steal information","A safe backup method","A spreadsheet formula","A display setting"],
+["Cloud storage","Stores files on remote servers accessible over a network","Stores files only on paper","A type of keyboard","A screen protector"],
+["Recycle Bin","Temporarily holds many deleted files before permanent removal","Stores passwords securely by itself","Prints old files","Connects networks"],
+["Backup","An extra copy of data kept for recovery","A computer game","A keyboard layout","A monitor setting"]
+],
+"Class 6":[
+["Binary number system","A number system that uses 0 and 1","A system using only Roman numerals","A drawing tool","A spreadsheet chart"],
+["Algorithm","A step-by-step method for solving a problem","A monitor component","A printer cartridge","A file name"],
+["Spreadsheet","Software for organizing and calculating data in cells","A sound recorder only","A keyboard cable","A web address"],
+["Phishing","A deceptive message or site intended to steal information","A secure login method by itself","A type of monitor","A programming loop"],
+["HTML","A markup language used to structure web pages","A printer driver","A physical network cable","A spreadsheet function"],
+["RAM","Temporary working memory used while a computer runs","A permanent paper record","A type of mouse","An internet provider"],
+["Storage device","Hardware that keeps data for later use","A screen brightness control","A typing shortcut","A browser bookmark"],
+["Search engine","A service that helps locate online information","A device for printing","A programming variable","A computer power supply"],
+["Two-factor authentication","Login protection using two different verification factors","Using the same password twice","Two browser tabs","Two usernames with no password"],
+["File extension","A suffix that often indicates a file type","A computer chair","A type of screen","A network password"]
+],
+"Class 7":[
+["HTML","A markup language used to structure web content","A database cable","A sound file format","A type of printer"],
+["Loop","A programming structure that repeats instructions","A monitor stand","A keyboard layout","A network plug"],
+["Byte","A common unit of digital information","A unit of distance","A unit of liquid","A type of monitor"],
+["Strong online safety","Verifying links and protecting private information","Sharing OTPs with strangers","Reusing one password everywhere","Posting passwords publicly"],
+["SSD","A storage device that uses solid-state memory","A type of keyboard key","A web browser","A printer tray"],
+["CSS","A language used to style the appearance of web pages","A language for database queries only","A type of monitor","A computer virus"],
+["Variable","A named place to hold a value in a program","A paper folder","A keyboard cable","A monitor pixel"],
+["Database","An organized collection of data","A speaker system","A screen theme","A type of mouse"],
+["LAN","A network covering a limited local area","A global network only","A keyboard shortcut","A file extension"],
+["Digital footprint","The trail of activity left by someone online","A printer mark only","A type of computer port","A screen resolution"]
+],
+"Class 8":[
+["Python","A programming language often used for learning and automation","A type of monitor","A printer cable","A file compression format"],
+["Variable","A named reference used to store or access a value in code","A power button","A paper document","A network switch"],
+["CSS color property","Changes the text or other selected element colour","Creates a database table","Prints a document","Connects a router"],
+["Database","An organized system for storing and retrieving data","A monitor component","A typing game","A speaker setting"],
+["Two-factor authentication","Uses two distinct verification factors for sign-in","Uses two copies of one password","Uses two browsers only","Disables all verification"],
+["Function","A reusable block of code that performs a task","A physical computer desk","A web image format","A keyboard cable"],
+["Cyberbullying","Using digital communication to bully or harass someone","Backing up files","Updating software","Formatting a spreadsheet"],
+["Encryption","Transforms data to help keep it unreadable without the right key","Deletes every backup","Makes a monitor brighter","Creates a keyboard shortcut"],
+["WAN","A network spanning a large geographical area","A single computer folder","A local keyboard","A type of printer"],
+["Open-source software","Software whose source code is made available under its licence","Software that must always be paid for","A computer with no operating system","A file that cannot be opened"]
+],
+"Class 9":[
+["Queue","A data structure that commonly follows first-in, first-out","A data structure that always follows last-in, first-out","A web browser","A printer driver"],
+["Python comment","A line comment begins with #","A line comment always begins with @","A line comment begins with $","A line comment begins with ?"],
+["HTML hyperlink","The a element creates a hyperlink","The p element creates every link","The br element creates a link","The h1 element is only for links"],
+["RAM","Volatile working memory used by running programs","Permanent printed storage","A network service","A type of keyboard"],
+["Malware","Software designed to harm, disrupt or gain unauthorized access","A safe spreadsheet formula","A screen saver","A normal USB connector"],
+["Primary key","A field or set of fields that uniquely identifies a database row","A field that must duplicate every other row","A text colour","A browser bookmark"],
+["Conditional statement","Runs code depending on whether a condition is met","Repeats code without a condition in every case","Stores only images","Connects a monitor"],
+["Boolean","A data type with true/false values","A type of printer","A network cable","A file extension"],
+["LAN","A network that connects devices in a limited local area","A network spanning the entire world by definition","A single program variable","A spreadsheet formula"],
+["Data validation","Checks whether entered data meets specified rules","Deletes all records automatically","Changes the screen size","Prints a database"]
+],
+"Class 10":[
+["SQL SELECT","Retrieves data from a database","Deletes all database tables","Changes monitor brightness","Creates a keyboard shortcut"],
+["Python bool","A type representing True or False","A type used only for pictures","A type of printer","A network cable"],
+["WAN","A network that spans a large geographical area","A network limited to one room by definition","A spreadsheet cell","A computer program variable"],
+["Primary key","Uniquely identifies each record in a database table","Allows every record to have the same identifier","Styles a web page","Encrypts every email automatically"],
+["Data backup","A copy used to help recover data after loss","A type of malware","A keyboard setting","A screen resolution"],
+["Python list","An ordered, mutable collection of items","A type of monitor","A database password","A network switch"],
+["Cybersecurity","Protecting systems, networks and data from digital threats","Decorating a computer case","Printing a document","Changing font size"],
+["HTML form","Collects user input on a web page","Stores files permanently by itself","Connects a router to power","Scans printed pages"],
+["Encryption","Uses a method and key to protect data confidentiality","Makes all data public","Deletes all data","Guarantees a device cannot be infected"],
+["Database query","A request to retrieve or manipulate data","A monitor setting","A printer cable","A keyboard key"]
+]
+};
+
+const variants = [
+  t => `What is the main purpose or meaning of ${t[0]}?`,
+  t => `Which statement best describes ${t[0]}?`,
+  t => `${t[0]} is best described as:`,
+  t => `Choose the correct explanation of ${t[0]}.`,
+  t => `Which option correctly matches the term ${t[0]}?`
+];
+
+function makeQuestions(className) {
+  const list = topics[className];
+
+  if (!list) {
+    throw new Error("Please select a valid class.");
+  }
+
+  const out = [];
+
+  list.forEach(topic => {
+    variants.forEach(makeText => {
+      const options = [topic[1], topic[2], topic[3], topic[4]];
+
+      for (let i = options.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [options[i], options[j]] = [options[j], options[i]];
+      }
+
+      out.push({
+        question: makeText(topic),
+        options: [...options],
+        correct: options.indexOf(topic[1])
+      });
+    });
+  });
+
+  for (let i = out.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+
+  return out.slice(0, TOTAL_QUESTIONS);
+}
+
+function getStudentInfo() {
+  const info = {
+    name: $("studentName").value.trim(),
+    studentId: $("studentId").value.trim(),
+    className: $("className").value
+  };
+
+  if (!info.name || !info.studentId || !info.className) {
+    throw new Error("विद्यार्थी का नाम, Student ID और Class भरें।");
+  }
+
+  return info;
+}
+
+
+/* Submit UTR directly to Firebase */
+
+$("studentForm").addEventListener("submit", async e => {
+  e.preventDefault();
+  clearError();
+
+  if (!currentUser) {
+    error("पहले login करें।");
+    return;
+  }
+
+  $("utrButton").disabled = true;
+  $("utrButton").textContent = "Submitting UTR...";
+
+  try {
+    studentInfo = getStudentInfo();
+
+    const utr = $("utr").value.trim();
+
+    if (!/^[A-Za-z0-9-]{8,80}$/.test(utr)) {
+      throw new Error("कृपया सही UTR / transaction reference number दर्ज करें।");
+    }
+
+    const approvalRef = ref(
+      db,
+      `computerExamApprovals/${currentUser.uid}`
+    );
+
+    const existingSnapshot = await get(approvalRef);
+
+    if (existingSnapshot.exists()) {
+      const existing = existingSnapshot.val();
+
+      if (existing.status === "approved") {
+        status("आपकी payment पहले ही approve हो चुकी है। Check Payment Approval दबाएँ।");
+        return;
+      }
+
+      if (existing.status === "pending") {
+        status("आपकी request पहले से जमा है। Admin approval की प्रतीक्षा करें।");
+        return;
+      }
+
+      if (existing.status === "rejected") {
+        throw new Error("आपकी पिछली request reject हुई थी। Admin से संपर्क करें।");
+      }
+    }
+
+    await set(approvalRef, {
+      uid: currentUser.uid,
+      studentName: studentInfo.name,
+      studentId: studentInfo.studentId,
+      className: studentInfo.className,
+      utr: utr,
+      amount: FEE,
+      status: "pending",
+      createdAt: Date.now(),
+      updatedAt: Date.now()
+    });
+
+    status("UTR जमा हो गया है। Admin payment verify करके approval देगा।");
+    $("utrButton").textContent = "UTR Submitted";
+
+  } catch (err) {
+    console.error("UTR submit error:", err);
+    error(err.message || "UTR submit नहीं हो पाया। Firebase Rules जाँचें।");
+    $("utrButton").textContent = "Submit UTR for Verification";
+
+  } finally {
+    $("utrButton").disabled = false;
+  }
+});
+
+
+/* Check admin approval directly from Firebase */
+
+$("checkApprovalButton").addEventListener("click", async () => {
+  clearError();
+
+  $("checkApprovalButton").disabled = true;
+  $("checkApprovalButton").textContent = "Checking...";
+
+  try {
+    if (!currentUser) {
+      throw new Error("पहले login करें।");
+    }
+
+    studentInfo = getStudentInfo();
+
+    const approvalRef = ref(
+      db,
+      `computerExamApprovals/${currentUser.uid}`
+    );
+
+    const snapshot = await get(approvalRef);
+
+    if (!snapshot.exists()) {
+      throw new Error("आपकी payment request नहीं मिली। पहले UTR submit करें।");
+    }
+
+    const request = snapshot.val();
+
+    if (request.uid !== currentUser.uid) {
+      throw new Error("यह approval request आपके account की नहीं है।");
+    }
+
+    if (
+      String(request.studentId).trim() !== studentInfo.studentId ||
+      request.className !== studentInfo.className
+    ) {
+      throw new Error("Student ID या Class जमा की गई request से match नहीं करती।");
+    }
+
+    if (request.status === "rejected") {
+      status("आपकी payment request reject हुई है। Admin से संपर्क करें।");
+      return;
+    }
+
+    if (request.status !== "approved") {
+      status("Payment अभी pending है। Admin approval के बाद दोबारा check करें।");
+      return;
+    }
+
+    status("Payment approved. परीक्षा शुरू हो रही है...");
+
+    await beginExam({
+      requestId: currentUser.uid
+    });
+
+  } catch (err) {
+    console.error("Approval check error:", err);
+    error(err.message || "Approval check नहीं हो पाया।");
+
+  } finally {
+    $("checkApprovalButton").disabled = false;
+    $("checkApprovalButton").textContent = "Check Payment Approval";
+  }
+});
+
+
+/* Start examination */
+
+async function beginExam(approvedPayment) {
+  if (examStarted) return;
+
+  studentInfo = studentInfo || getStudentInfo();
+  questions = makeQuestions(studentInfo.className);
+
+  $("questions").replaceChildren();
+
+  questions.forEach((q, i) => {
+    const section = document.createElement("div");
+    section.className = "question";
+
+    const title = document.createElement("p");
+    title.textContent = `${i + 1}. ${q.question}`;
+    section.appendChild(title);
+
+    q.options.forEach((option, j) => {
+      const label = document.createElement("label");
+      label.className = "option";
+
+      const input = document.createElement("input");
+      input.type = "radio";
+      input.name = `q${i}`;
+      input.value = String(j);
+
+      const span = document.createElement("span");
+      span.textContent = option;
+
+      label.append(input, span);
+      section.appendChild(label);
+    });
+
+    $("questions").appendChild(section);
+  });
+
+  const attemptsRef = ref(
+    db,
+    `computerExamAttempts/${currentUser.uid}`
+  );
+
+  const newAttempt = push(attemptsRef);
+
+  await set(newAttempt, {
+    uid: currentUser.uid,
+    studentName: studentInfo.name,
+    studentId: studentInfo.studentId,
+    className: studentInfo.className,
+    examTitle: "Computer Examination",
+    status: "in_progress",
+    paymentStatus: "approved",
+    paymentRequestId: approvedPayment.requestId || null,
+    amount: FEE,
+    startedAt: Date.now(),
+    totalQuestions: TOTAL_QUESTIONS,
+    answers: {},
+    score: null
+  });
+
+  attemptRef = newAttempt;
+
+  $("registrationCard").classList.add("hidden");
+  $("examCard").classList.remove("hidden");
+
+  $("examStudent").textContent =
+    `${studentInfo.name} | ID: ${studentInfo.studentId} | ${studentInfo.className}`;
+
+  examStarted = true;
+  timeLeft = EXAM_SECONDS;
+  updateTimer();
+
+  timerInterval = setInterval(() => {
+    timeLeft--;
+    updateTimer();
+
+    if (timeLeft <= 0) {
+      clearInterval(timerInterval);
+      submitExam(true);
+    }
+  }, 1000);
+
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function updateTimer() {
+  $("timer").textContent =
+    `${String(Math.floor(timeLeft / 60)).padStart(2, "0")}:${String(timeLeft % 60).padStart(2, "0")}`;
+}
+
+
+/* Submit examination */
+
+async function submitExam(auto = false) {
+  if (!examStarted || submitting || !attemptRef) return;
+
+  if (!auto && !confirm("क्या आप परीक्षा submit करना चाहते हैं?")) {
+    return;
+  }
+
+  submitting = true;
+  clearInterval(timerInterval);
+
+  $("submitButton").disabled = true;
+  $("submitButton").textContent = "Submitting...";
+
+  try {
+    const answers = {};
+    let score = 0;
+
+    questions.forEach((q, i) => {
+      const selected = document.querySelector(
+        `input[name="q${i}"]:checked`
+      );
+
+      const answer = selected ? Number(selected.value) : null;
+      answers[i] = answer;
+
+      if (answer === q.correct) score++;
+    });
+
+    await update(attemptRef, {
+      answers,
+      score,
+      totalQuestions: questions.length,
+      status: "submitted",
+      submittedAt: Date.now()
+    });
+
+    examStarted = false;
+
+    $("examCard").classList.add("hidden");
+    $("doneCard").classList.remove("hidden");
+
+    $("doneStudent").textContent =
+      `${studentInfo.name} | ${studentInfo.studentId} | ${studentInfo.className}`;
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+
+  } catch (err) {
+    console.error("Exam submit error:", err);
+
+    alert("Exam save नहीं हो पाया। Internet और Firebase Rules जाँचें। दोबारा submit करने की कोशिश करें।");
+
+    $("submitButton").disabled = false;
+    $("submitButton").textContent = "Submit Examination";
+    submitting = false;
+  }
+}
+
+$("examForm").addEventListener("submit", e => {
+  e.preventDefault();
+  submitExam(false);
+});
+</script>
+</body>
+</html>

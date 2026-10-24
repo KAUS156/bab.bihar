@@ -2,703 +2,275 @@
 <!DOCTYPE html>
 <html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#102d69">
-  <meta name="description" content="BIHAR ACADEMIC BATTLE School Login">
-  <title>School Login | Bihar Academic Battle</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#102d69">
+<title>Student Login | Bihar Academic Battle</title>
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-    }
-
-    body {
-      font-family: Arial, Helvetica, sans-serif;
-      min-height: 100vh;
-      background: linear-gradient(135deg, #071735, #123d88, #3478d4);
-      color: #172554;
-      display: flex;
-      flex-direction: column;
-    }
-
-    header {
-      text-align: center;
-      padding: 25px 15px;
-      color: white;
-    }
-
-    .brand {
-      font-size: clamp(21px, 4vw, 30px);
-      font-weight: 900;
-      letter-spacing: 1px;
-    }
-
-    header p {
-      color: #dbeafe;
-      font-size: 14px;
-      margin-top: 8px;
-    }
-
-    main {
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 15px 16px 35px;
-    }
-
-    .login-card {
-      width: 100%;
-      max-width: 440px;
-      background: #fff;
-      border-radius: 22px;
-      padding: 32px;
-      box-shadow: 0 20px 60px #0003;
-    }
-
-    .logo {
-      width: 72px;
-      height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0 auto 16px;
-      border-radius: 20px;
-      background: #eff6ff;
-      font-size: 38px;
-    }
-
-    h1 {
-      color: #102d69;
-      font-size: 27px;
-      text-align: center;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: #64748b;
-      font-size: 14px;
-      line-height: 1.6;
-      margin: 10px 0 25px;
-    }
-
-    .field {
-      margin-bottom: 17px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 8px;
-      font-size: 14px;
-      font-weight: 700;
-    }
-
-    input {
-      width: 100%;
-      height: 48px;
-      padding: 0 13px;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      outline: none;
-      background: white;
-      font-size: 15px;
-    }
-
-    input:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px #2563eb20;
-    }
-
-    .password-wrap {
-      position: relative;
-    }
-
-    .password-wrap input {
-      padding-right: 65px;
-    }
-
-    .show-password {
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      border: 0;
-      background: transparent;
-      color: #1d4ed8;
-      cursor: pointer;
-      font-weight: 700;
-    }
-
-    .forgot-row {
-      text-align: right;
-      margin: -3px 0 19px;
-    }
-
-    a {
-      color: #1d4ed8;
-      text-decoration: none;
-      font-size: 14px;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-
-    .login-btn {
-      width: 100%;
-      min-height: 49px;
-      border: 0;
-      border-radius: 10px;
-      color: white;
-      background: linear-gradient(90deg, #1646a0, #2563eb);
-      font-size: 16px;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .login-btn:hover {
-      filter: brightness(1.07);
-    }
-
-    .google-btn {
-      width: 100%;
-      min-height: 49px;
-      padding: 10px;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      background: white;
-      color: #1e293b;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .google-btn:hover {
-      background: #f8fafc;
-      border-color: #94a3b8;
-    }
-
-    .google-btn:disabled,
-    .login-btn:disabled {
-      opacity: .6;
-      cursor: not-allowed;
-    }
-
-    .google-icon {
-      font-size: 23px;
-      font-weight: 900;
-      font-family: Arial, sans-serif;
-      color: #4285f4;
-    }
-
-    .google-icon span:nth-child(1) {
-      color: #4285f4;
-    }
-
-    .divider {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 19px 0;
-      color: #64748b;
-      font-size: 13px;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: "";
-      height: 1px;
-      flex: 1;
-      background: #e2e8f0;
-    }
-
-    .message {
-      display: none;
-      padding: 12px;
-      margin-bottom: 16px;
-      border-radius: 9px;
-      font-size: 13px;
-      line-height: 1.6;
-      overflow-wrap: anywhere;
-    }
-
-    .message.error {
-      display: block;
-      color: #991b1b;
-      background: #fef2f2;
-      border: 1px solid #fecaca;
-    }
-
-    .message.success {
-      display: block;
-      color: #166534;
-      background: #f0fdf4;
-      border: 1px solid #bbf7d0;
-    }
-
-    .register {
-      text-align: center;
-      border-top: 1px solid #e2e8f0;
-      margin-top: 23px;
-      padding-top: 20px;
-      color: #64748b;
-      font-size: 14px;
-      line-height: 1.8;
-    }
-
-    .register a {
-      display: inline-block;
-      margin-top: 5px;
-      font-weight: 700;
-    }
-
-    footer {
-      padding: 16px;
-      color: #dbeafe;
-      text-align: center;
-      font-size: 12px;
-    }
-
-    @media (max-width: 480px) {
-      .login-card {
-        padding: 25px 20px;
-        border-radius: 18px;
-      }
-    }
-  </style>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:Arial,sans-serif;background:linear-gradient(135deg,#071735,#1646a0,#3979dc);display:flex;flex-direction:column;color:#172554}
+header{text-align:center;padding:25px 12px;color:white}
+.brand{font-size:clamp(21px,4vw,29px);font-weight:900}
+header p{font-size:14px;color:#dbeafe;margin-top:8px}
+main{flex:1;display:flex;align-items:center;justify-content:center;padding:16px}
+.card{background:#fff;width:100%;max-width:430px;padding:30px;border-radius:22px;box-shadow:0 20px 60px #0003}
+.logo{width:72px;height:72px;background:#eff6ff;border-radius:20px;margin:0 auto 15px;display:grid;place-items:center;font-size:38px}
+h1{text-align:center;color:#102d69;font-size:27px;margin:0}
+.subtitle{text-align:center;color:#64748b;font-size:14px;line-height:1.6;margin:10px 0 24px}
+label{display:block;font-size:14px;font-weight:700;margin:16px 0 8px}
+input{width:100%;height:47px;padding:0 12px;border:1px solid #cbd5e1;border-radius:10px;font-size:15px;outline:none}
+input:focus{border-color:#2563eb;box-shadow:0 0 0 3px #2563eb20}
+.password{position:relative}
+.password input{padding-right:65px}
+.show{position:absolute;right:10px;top:50%;transform:translateY(-50%);border:0;background:white;color:#1d4ed8;font-weight:bold;cursor:pointer}
+button{font-family:inherit}
+.primary,.google{width:100%;min-height:49px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer}
+.primary{margin-top:20px;border:0;background:linear-gradient(90deg,#1646a0,#2563eb);color:white}
+.google{display:flex;justify-content:center;align-items:center;gap:12px;background:white;border:1px solid #cbd5e1;color:#1e293b}
+.google:hover{background:#f8fafc}
+.google .g{font-size:23px;color:#4285f4;font-weight:900}
+button:disabled{opacity:.6;cursor:wait}
+.divider{display:flex;align-items:center;gap:12px;color:#64748b;font-size:13px;margin:20px 0}
+.divider:before,.divider:after{content:"";height:1px;background:#e2e8f0;flex:1}
+.forgot{text-align:right;margin-top:13px}
+a{color:#1d4ed8;text-decoration:none;font-size:14px}
+a:hover{text-decoration:underline}
+.message{display:none;padding:12px;border-radius:9px;margin:0 0 15px;font-size:13px;line-height:1.6;overflow-wrap:anywhere}
+.message.error{display:block;color:#991b1b;background:#fef2f2;border:1px solid #fecaca}
+.message.success{display:block;color:#166534;background:#f0fdf4;border:1px solid #bbf7d0}
+.register{text-align:center;border-top:1px solid #e2e8f0;margin-top:23px;padding-top:20px;font-size:14px;line-height:1.8;color:#64748b}
+footer{text-align:center;padding:15px;color:#dbeafe;font-size:12px}
+@media(max-width:480px){.card{padding:24px 20px}}
+</style>
 </head>
 
 <body>
+<header>
+  <div class="brand">BIHAR ACADEMIC BATTLE</div>
+  <p>Bihar's Academic Battle Platform</p>
+</header>
 
-  <header>
-    <div class="brand">BIHAR ACADEMIC BATTLE</div>
-    <p>Bihar's Academic Battle Platform</p>
-  </header>
+<main>
+<section class="card">
+  <div class="logo">🎓</div>
+  <h1>Student Login</h1>
+  <p class="subtitle">अपने अकाउंट से लॉगिन करें और अपना Academic Battle Dashboard खोलें।</p>
 
-  <main>
-    <section class="login-card">
+  <div id="message" class="message" role="status" aria-live="polite"></div>
 
-      <div class="logo" aria-hidden="true">🎓</div>
+  <button type="button" id="googleBtn" class="google">
+    <span class="g">G</span> Continue with Google
+  </button>
 
-      <h1>School Login</h1>
+  <div class="divider">या Email से लॉगिन करें</div>
 
-      <p class="subtitle">
-        अपने स्कूल अकाउंट में लॉगिन करें और
-        Student Registration तथा Admit Card की सुविधा पाएँ।
-      </p>
+  <form id="loginForm">
+    <label for="email">Email Address</label>
+    <input id="email" type="email" placeholder="student@example.com" autocomplete="username" required>
 
-      <div id="message" class="message"
-           role="status" aria-live="polite"></div>
+    <label for="password">Password</label>
+    <div class="password">
+      <input id="password" type="password" placeholder="अपना पासवर्ड डालें" autocomplete="current-password" required>
+      <button type="button" class="show" id="showPassword">Show</button>
+    </div>
 
-      <!-- Google Login -->
-      <button type="button" id="googleLoginBtn" class="google-btn">
-        <span class="google-icon">G</span>
-        <span>Continue with Google</span>
-      </button>
+    <div class="forgot">
+      <a href="#" id="forgotPassword">Forgot Password?</a>
+    </div>
 
-      <div class="divider">या Email से लॉगिन करें</div>
+    <button class="primary" id="loginBtn" type="submit">Login to Academic Battle →</button>
+  </form>
 
-      <!-- Email and Password Login -->
-      <form id="loginForm">
+  <div class="register">
+    पहली बार Google से आ रहे हैं? Google बटन दबाएँ।
+    <br>Google Login पर पहली बार आपकी प्रोफाइल बनाई जाएगी।
+  </div>
+</section>
+</main>
 
-        <div class="field">
-          <label for="email">Registered Email Address</label>
-          <input
-            type="email"
-            id="email"
-            name="email"
-            placeholder="school@example.com"
-            autocomplete="username"
-            required
-          >
-        </div>
+<footer>© 2026 Bihar Academic Battle</footer>
 
-        <div class="field">
-          <label for="password">Password</label>
+<script type="module">
+import { initializeApp, getApps } from
+  "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
 
-          <div class="password-wrap">
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="अपना पासवर्ड डालें"
-              autocomplete="current-password"
-              required
-            >
+import {
+  getAuth, GoogleAuthProvider, signInWithPopup,
+  signInWithEmailAndPassword, sendPasswordResetEmail,
+  onAuthStateChanged, signOut
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
 
-            <button
-              type="button"
-              class="show-password"
-              id="togglePassword"
-            >Show</button>
-          </div>
-        </div>
+import {
+  getDatabase, ref, get, set, update, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
 
-        <div class="forgot-row">
-          <a href="#" id="forgotPassword">Forgot Password?</a>
-        </div>
+const firebaseConfig = {
+  apiKey: "AIzaSyBO6-Qq6Yh6E4ECx9BXGySqzC8J2zdHYzs",
+  authDomain: "babbihar-23fcc.firebaseapp.com",
+  projectId: "babbihar-23fcc",
+  storageBucket: "babbihar-23fcc.firebasestorage.app",
+  messagingSenderId: "310810953638",
+  appId: "1:310810953638:web:cbaafbf43b5cfd2dffb167",
+  measurementId: "G-43J5L0K1MZ",
+  databaseURL: "https://babbihar-23fcc-default-rtdb.firebaseio.com/"
+};
 
-        <button type="submit" id="loginBtn" class="login-btn">
-          Login to Dashboard →
-        </button>
+const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getDatabase(app);
+const provider = new GoogleAuthProvider();
+provider.setCustomParameters({prompt:"select_account"});
 
-      </form>
+const $ = id => document.getElementById(id);
+const message = $("message");
+const loginBtn = $("loginBtn");
+const googleBtn = $("googleBtn");
+let busy = false;
 
-      <div class="register">
-        क्या आपका स्कूल अभी रजिस्टर नहीं है?
-        <br>
-        <a href="/pages/school-registration.html">
-          Register Your School →
-        </a>
-      </div>
+function showMessage(text,type="error"){
+  message.textContent=text;
+  message.className="message "+type;
+}
+function clearMessage(){
+  message.textContent="";
+  message.className="message";
+}
+function loading(value){
+  loginBtn.disabled=value;
+  googleBtn.disabled=value;
+  loginBtn.textContent=value?"Please wait...":"Login to Academic Battle →";
+  googleBtn.innerHTML=value?"Google से लॉगिन हो रहा है...":'<span class="g">G</span> Continue with Google';
+}
+function friendlyError(e){
+  const errors={
+    "auth/invalid-credential":"Email या Password गलत है।",
+    "auth/invalid-email":"सही Email Address डालें।",
+    "auth/user-not-found":"इस Email से अकाउंट नहीं मिला।",
+    "auth/wrong-password":"Password गलत है।",
+    "auth/too-many-requests":"बहुत प्रयास हुए हैं। कुछ देर बाद कोशिश करें।",
+    "auth/network-request-failed":"Internet कनेक्शन जाँचें।",
+    "auth/operation-not-allowed":"Firebase Console में यह Login Method चालू करें।",
+    "auth/popup-closed-by-user":"Google Login विंडो बंद कर दी गई।",
+    "auth/popup-blocked":"ब्राउज़र में Pop-ups की अनुमति दें।",
+    "auth/unauthorized-domain":"Firebase Authentication में अपनी वेबसाइट का Domain जोड़ें।",
+    "auth/account-exists-with-different-credential":"यह Email किसी दूसरे Login Method से जुड़ा है। पहले उसी तरीके से लॉगिन करें।"
+  };
+  return errors[e.code] || "Login Error: "+(e.code||e.message||"Unknown error");
+}
 
-    </section>
-  </main>
+// Create the student's profile once. Later logins update only basic
+// account details and do not erase class, school or battle scores.
+async function saveStudentProfile(user){
+  const profileRef=ref(db,"studentProfiles/"+user.uid);
+  const snapshot=await get(profileRef);
 
-  <footer>
-    © 2026 Bihar Academic Battle | All Rights Reserved
-  </footer>
-
-  <script type="module">
-    import {
-      initializeApp
-    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-app.js";
-
-    import {
-      getAuth,
-      signInWithEmailAndPassword,
-      sendPasswordResetEmail,
-      GoogleAuthProvider,
-      signInWithPopup,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-auth.js";
-
-    import {
-      getDatabase,
-      ref,
-      get
-    } from "https://www.gstatic.com/firebasejs/12.18.0/firebase-database.js";
-
-
-    // Firebase configuration
-    const firebaseConfig = {
-      apiKey: "AIzaSyBO6-Qq6Yh6E4ECx9BXGySqzC8J2zdHYzs",
-      authDomain: "babbihar-23fcc.firebaseapp.com",
-      projectId: "babbihar-23fcc",
-      storageBucket: "babbihar-23fcc.firebasestorage.app",
-      messagingSenderId: "310810953638",
-      appId: "1:310810953638:web:cbaafbf43b5cfd2dffb167",
-      measurementId: "G-43J5L0K1MZ",
-      databaseURL:
-        "https://babbihar-23fcc-default-rtdb.firebaseio.com/"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getDatabase(app);
-
-    const googleProvider = new GoogleAuthProvider();
-
-    googleProvider.setCustomParameters({
-      prompt: "select_account"
+  if(!snapshot.exists()){
+    await set(profileRef,{
+      uid:user.uid,
+      name:user.displayName||"",
+      email:user.email||"",
+      photoURL:user.photoURL||"",
+      provider:user.providerData.some(p=>p.providerId==="google.com")?"google":"email",
+      createdAt:serverTimestamp()
     });
-
-    // Change this if your dashboard is in another folder.
-    const DASHBOARD_URL = "/dashboard.html";
-
-    const form = document.getElementById("loginForm");
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-
-    const loginBtn = document.getElementById("loginBtn");
-    const googleLoginBtn = document.getElementById("googleLoginBtn");
-    const togglePassword = document.getElementById("togglePassword");
-    const forgotPassword = document.getElementById("forgotPassword");
-    const message = document.getElementById("message");
-
-    let loginInProgress = false;
-
-
-    function showMessage(text, type = "error") {
-      message.textContent = text;
-      message.className = "message " + type;
-    }
-
-    function clearMessage() {
-      message.textContent = "";
-      message.className = "message";
-    }
-
-    function setLoading(loading, text = "") {
-      loginBtn.disabled = loading;
-      googleLoginBtn.disabled = loading;
-
-      loginBtn.textContent = loading
-        ? text || "Please wait..."
-        : "Login to Dashboard →";
-
-      googleLoginBtn.innerHTML = loading
-        ? "Google से लॉगिन हो रहा है..."
-        : '<span class="google-icon">G</span><span>Continue with Google</span>';
-    }
-
-    function friendlyError(error) {
-      const errors = {
-        "auth/invalid-credential":
-          "Email या Password गलत है।",
-
-        "auth/invalid-email":
-          "सही Email Address डालें।",
-
-        "auth/user-not-found":
-          "इस Email से Firebase अकाउंट नहीं मिला।",
-
-        "auth/wrong-password":
-          "Password गलत है।",
-
-        "auth/too-many-requests":
-          "बहुत प्रयास हो चुके हैं। कुछ देर बाद कोशिश करें।",
-
-        "auth/network-request-failed":
-          "Internet connection जाँचें।",
-
-        "auth/operation-not-allowed":
-          "Firebase Console में यह Login Method चालू करें।",
-
-        "auth/popup-closed-by-user":
-          "Google Login विंडो बंद कर दी गई।",
-
-        "auth/popup-blocked":
-          "ब्राउज़र में Pop-ups की अनुमति दें।",
-
-        "auth/unauthorized-domain":
-          "Firebase Authentication में इस वेबसाइट का Domain जोड़ें।",
-
-        "auth/account-exists-with-different-credential":
-          "यह Email किसी दूसरे Login Method से जुड़ा है। पहले उसी तरीके से लॉगिन करके अकाउंट लिंक करें।",
-
-        "auth/cancelled-popup-request":
-          "Google Login पहले से खुला है।",
-
-        "auth/user-disabled":
-          "यह अकाउंट बंद है। Admin से संपर्क करें।"
-      };
-
-      return errors[error?.code] ||
-        "Login नहीं हो सका। Error: " +
-        (error?.code || error?.message || "Unknown error");
-    }
-
-
-    // Verify that the authenticated user owns an active school profile.
-    async function openDashboard(user) {
-      let schoolSnapshot;
-
-      try {
-        schoolSnapshot = await get(
-          ref(db, "schools/" + user.uid)
-        );
-      } catch (error) {
-        if (
-          error.code === "PERMISSION_DENIED" ||
-          error.code === "database/permission-denied"
-        ) {
-          throw new Error("DATABASE_PERMISSION_DENIED");
-        }
-
-        throw error;
-      }
-
-      if (!schoolSnapshot.exists()) {
-        throw new Error("SCHOOL_PROFILE_NOT_FOUND");
-      }
-
-      const school = schoolSnapshot.val();
-
-      if (
-        String(school.status || "").toLowerCase() !== "active"
-      ) {
-        throw new Error("SCHOOL_NOT_ACTIVE");
-      }
-
-      // Redirect only after the profile has been verified.
-      window.location.replace(DASHBOARD_URL);
-    }
-
-
-    async function handleLogin(loginFunction) {
-      if (loginInProgress) return;
-
-      loginInProgress = true;
-      clearMessage();
-      setLoading(true, "Logging in...");
-
-      let signedInUser = null;
-
-      try {
-        const result = await loginFunction();
-        signedInUser = result.user;
-
-        await openDashboard(signedInUser);
-
-      } catch (error) {
-        console.error("Login Error:", error);
-
-        if (error.message === "SCHOOL_PROFILE_NOT_FOUND") {
-          showMessage(
-            "इस Firebase UID पर स्कूल प्रोफाइल नहीं मिला। " +
-            "Realtime Database में schools/" +
-            (signedInUser?.uid || auth.currentUser?.uid || "UID") +
-            " जाँचें। यदि यह Google का नया UID है, तो पुराने स्कूल अकाउंट को सुरक्षित रूप से लिंक करना होगा।"
-          );
-        } else if (error.message === "SCHOOL_NOT_ACTIVE") {
-          showMessage(
-            "आपका स्कूल अकाउंट Active नहीं है। Admin से संपर्क करें।"
-          );
-        } else if (
-          error.message === "DATABASE_PERMISSION_DENIED"
-        ) {
-          showMessage(
-            "Database Permission Denied। Firebase Realtime Database Rules जाँचें।"
-          );
-        } else {
-          showMessage(friendlyError(error));
-        }
-
-        // Do not leave an unverified account signed in.
-        if (signedInUser) {
-          try {
-            await signOut(auth);
-          } catch (signOutError) {
-            console.error("Sign-out Error:", signOutError);
-          }
-        }
-
-      } finally {
-        loginInProgress = false;
-        setLoading(false);
-      }
-    }
-
-
-    // Email and Password Login
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-
-      const email = emailInput.value.trim();
-      const password = passwordInput.value;
-
-      if (!email || !password) {
-        showMessage("Email और Password दोनों भरें।");
-        return;
-      }
-
-      await handleLogin(() =>
-        signInWithEmailAndPassword(auth, email, password)
-      );
+  }else{
+    const old=snapshot.val()||{};
+    await update(profileRef,{
+      name:user.displayName||old.name||"",
+      email:user.email||old.email||"",
+      photoURL:user.photoURL||old.photoURL||""
     });
+  }
+}
 
+async function finishLogin(user){
+  await saveStudentProfile(user);
+  window.location.replace("/student-dashboard.html");
+}
 
-    // Google Login
-    googleLoginBtn.addEventListener("click", async () => {
-      await handleLogin(() =>
-        signInWithPopup(auth, googleProvider)
-      );
-    });
+async function login(action){
+  if(busy)return;
+  busy=true;
+  clearMessage();
+  loading(true);
+  let user=null;
 
+  try{
+    const result=await action();
+    user=result.user;
+    await finishLogin(user);
+  }catch(e){
+    console.error("Student Login Error:",e);
+    if(user){
+      try{await signOut(auth)}catch(signOutError){console.error(signOutError)}
+    }
+    showMessage(friendlyError(e));
+  }finally{
+    busy=false;
+    loading(false);
+  }
+}
 
-    // Show / Hide Password
-    togglePassword.addEventListener("click", () => {
-      const isHidden = passwordInput.type === "password";
+$("loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const email=$("email").value.trim();
+  const password=$("password").value;
+  if(!email||!password){
+    showMessage("Email और Password भरें।");
+    return;
+  }
+  await login(()=>signInWithEmailAndPassword(auth,email,password));
+});
 
-      passwordInput.type = isHidden ? "text" : "password";
-      togglePassword.textContent = isHidden ? "Hide" : "Show";
-    });
+googleBtn.addEventListener("click",()=>{
+  login(()=>signInWithPopup(auth,provider));
+});
 
+$("showPassword").addEventListener("click",()=>{
+  const input=$("password");
+  const visible=input.type==="password";
+  input.type=visible?"text":"password";
+  $("showPassword").textContent=visible?"Hide":"Show";
+});
 
-    // Forgot Password
-    forgotPassword.addEventListener("click", async (event) => {
-      event.preventDefault();
-      clearMessage();
+$("forgotPassword").addEventListener("click",async e=>{
+  e.preventDefault();
+  clearMessage();
+  const email=$("email").value.trim();
+  if(!email){
+    showMessage("पहले अपना Email Address भरें।");
+    $("email").focus();
+    return;
+  }
+  try{
+    await sendPasswordResetEmail(auth,email);
+    showMessage("यदि इस Email का अकाउंट मौजूद है, तो Password Reset Email भेज दिया गया है। Inbox और Spam जाँचें।","success");
+  }catch(e){
+    showMessage(friendlyError(e));
+  }
+});
 
-      const email = emailInput.value.trim();
-
-      if (!email) {
-        showMessage(
-          "पहले अपना Registered Email Address भरें।"
-        );
-        emailInput.focus();
-        return;
-      }
-
-      try {
-        await sendPasswordResetEmail(auth, email);
-
-        showMessage(
-          "यदि इस Email का अकाउंट मौजूद है, तो Password Reset Email भेज दिया गया है। Inbox और Spam Folder जाँचें।",
-          "success"
-        );
-
-      } catch (error) {
-        console.error("Password Reset Error:", error);
-        showMessage(friendlyError(error));
-      }
-    });
-
-
-    // Existing signed-in session
-    onAuthStateChanged(auth, async (user) => {
-      if (!user || loginInProgress) return;
-
-      loginInProgress = true;
-      clearMessage();
-      setLoading(true, "Checking account...");
-
-      try {
-        await openDashboard(user);
-
-      } catch (error) {
-        console.error("Session Check Error:", error);
-
-        try {
-          await signOut(auth);
-        } catch (signOutError) {
-          console.error(signOutError);
-        }
-
-        if (error.message === "SCHOOL_PROFILE_NOT_FOUND") {
-          showMessage(
-            "School profile नहीं मिला। Admin से अकाउंट और UID जाँच करवाएँ।"
-          );
-        } else if (error.message === "SCHOOL_NOT_ACTIVE") {
-          showMessage("आपका स्कूल अकाउंट Active नहीं है।");
-        } else if (
-          error.message === "DATABASE_PERMISSION_DENIED"
-        ) {
-          showMessage(
-            "Database permission error। Firebase Rules जाँचें।"
-          );
-        } else {
-          showMessage(
-            "अकाउंट जाँच नहीं हो सकी। Internet और Firebase Settings जाँचें।"
-          );
-        }
-
-      } finally {
-        loginInProgress = false;
-        setLoading(false);
-      }
-    });
-
-  </script>
-
+// Existing authenticated users can open their dashboard too.
+onAuthStateChanged(auth,async user=>{
+  if(!user||busy)return;
+  busy=true;
+  loading(true);
+  try{
+    await finishLogin(user);
+  }catch(e){
+    console.error("Existing login/profile error:",e);
+    showMessage(
+      e.code==="PERMISSION_DENIED"||e.code==="database/permission-denied"
+      ?"Database Permission Denied। Realtime Database Rules जाँचें।"
+      :"प्रोफाइल सेव नहीं हुई। Firebase Database Rules और Internet जाँचें।"
+    );
+    try{await signOut(auth)}catch(_){}
+  }finally{
+    busy=false;
+    loading(false);
+  }
+});
+</script>
 </body>
 </html>

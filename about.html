@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#062d65">
+<meta name="description" content="Bihar Academic Battle — बिहार की प्रतिभा, शिक्षा और सफलता का मंच।">
+<title>About Us | Bihar Academic Battle</title>
+<style>
+:root{--navy:#062d65;--navy2:#0b4388;--blue:#0878ed;--gold:#ffbd17;--ink:#123361;--muted:#536783;--pale:#f0f7ff;--white:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;font-family:Arial,"Noto Sans Devanagari",sans-serif;color:var(--ink);background:#fff;line-height:1.65}
+a{color:inherit;text-decoration:none}.container{width:min(1200px,92%);margin:auto}
+header{background:linear-gradient(100deg,#052657,#0b4388);color:#fff;position:sticky;top:0;z-index:20;box-shadow:0 4px 16px #001b4430}
+.nav{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.brand{display:flex;align-items:center;gap:11px;font-weight:800;font-size:19px;line-height:1.25}.brand-icon{font-size:34px}.brand b{color:var(--gold)}.brand small{display:block;font-size:11px;font-weight:500;letter-spacing:.5px;margin-top:4px}
+.navlinks{display:flex;align-items:center;gap:22px;font-size:13px;font-weight:700}.navlinks a{padding:8px 0;opacity:.95}.navlinks a.active,.navlinks a:hover{color:var(--gold);border-bottom:3px solid var(--gold)}
+.navbtns{display:flex;gap:8px}.pill{padding:10px 17px;border-radius:30px;background:#0878ed;color:#fff;font-size:13px;font-weight:700}.pill.gold{background:var(--gold);color:#082b5a}
+.menu-btn{display:none;background:transparent;border:1px solid #ffffff70;padding:7px 11px;color:#fff;font-size:22px}
+.hero{color:#fff;min-height:340px;position:relative;overflow:hidden;background:linear-gradient(90deg,#062b61 0%,#083a72e8 39%,#083a7230 100%),url('https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=2000&q=85') center 48%/cover}
+.hero:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#05295b66,transparent 55%);pointer-events:none}.hero-inner{position:relative;z-index:1;min-height:340px;display:flex;align-items:center;justify-content:space-between;gap:25px;padding:38px 0}
+.hero-copy{max-width:560px}.eyebrow{font-size:12px;letter-spacing:2px;font-weight:800;color:#8bd7ff}.hero h1{font-size:clamp(34px,5vw,51px);line-height:1.12;margin:9px 0 6px}.hero h1 span{color:var(--gold)}.hero h2{font-size:22px;margin:0 0 12px}.hero p{max-width:500px;color:#eef5ff;margin:0 0 20px}.cta{display:inline-flex;gap:10px;align-items:center;background:var(--gold);color:#082c60;border-radius:30px;padding:12px 20px;font-weight:800}
+.hero-art{align-self:flex-end;font-size:clamp(70px,12vw,145px);filter:drop-shadow(0 15px 12px #001b4b50);padding-right:25px}
+section{padding:34px 0}.section-label{font-size:11px;letter-spacing:1.4px;font-weight:900;color:#064eaa;text-transform:uppercase}.section-title{font-size:clamp(26px,3.5vw,36px);line-height:1.2;margin:5px 0 15px;color:#0b3268}.mission-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:28px;align-items:center}.lead{color:var(--muted);margin:0;max-width:620px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:20px}.stat{border:1px solid #e2ebf7;border-radius:10px;padding:14px 8px;text-align:center;box-shadow:0 4px 14px #12336108}.stat .emoji{font-size:23px}.stat strong{display:block;font-size:21px;color:#082f68}.stat span{font-size:12px;color:var(--muted)}
+.quote-light{min-height:235px;border-radius:12px;background:linear-gradient(110deg,#edf7ff,#cfeaff);padding:27px;display:flex;align-items:center;justify-content:space-between;gap:12px;overflow:hidden}.quote-light blockquote{font-size:22px;font-weight:800;line-height:1.55;margin:0;max-width:390px}.quote-light .books{font-size:90px;align-self:flex-end}
+.features-section{background:linear-gradient(#f1f8ff,#f8fbff)}.feature-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-top:18px}.feature{background:#fff;border-radius:10px;padding:18px 13px;text-align:center;box-shadow:0 5px 20px #163b6810;border:1px solid #edf3fb;transition:transform .2s}.feature:hover{transform:translateY(-4px)}.feature-icon{margin:0 auto 10px;width:58px;height:58px;display:grid;place-items:center;border-radius:50%;color:#fff;font-size:28px;background:#54b64a}.feature:nth-child(2) .feature-icon{background:#0878ed}.feature:nth-child(3) .feature-icon{background:#9036db}.feature:nth-child(4) .feature-icon{background:#ff8b10}.feature:nth-child(5) .feature-icon{background:#0cae9c}.feature h3{font-size:15px;margin:4px 0;color:#0a3269}.feature p{font-size:13px;color:var(--muted);line-height:1.5;margin:0}.feature-bottom{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin-top:14px}.feature-horizontal{display:flex;align-items:flex-start;gap:13px;background:#fff;border:1px solid #edf3fb;border-radius:10px;padding:17px}.feature-horizontal .feature-icon{flex:0 0 55px;margin:0;background:#fb3764}.feature-horizontal:nth-child(2) .feature-icon{background:#0878ed}.feature-horizontal h3{margin:2px 0 5px;font-size:15px}.feature-horizontal p{margin:0;font-size:13px;color:var(--muted)}.motto{display:flex;flex-direction:column;justify-content:center;text-align:center;color:#06459b;font-weight:800;font-size:18px;padding:20px}.motto em{font-size:20px;color:#0753b8}
+.owner{background:radial-gradient(ellipse at 60% 10%,#0b4b8d,#052758 70%);color:#fff;padding:30px 0}.owner-grid{display:grid;grid-template-columns:210px 1fr .75fr;align-items:center;gap:30px}.owner-photo{width:190px;height:190px;border-radius:50%;border:5px solid white;display:grid;place-items:center;background:linear-gradient(135deg,#dceeff,#8fb6d7);overflow:hidden;margin:auto;font-size:88px}.owner-photo img{width:100%;height:100%;object-fit:cover}.owner-label{font-size:11px;letter-spacing:1px;font-weight:900;color:#dcecff}.owner h2{font-size:27px;margin:2px 0 10px;color:#fff}.owner-quote{margin:0;color:#f2f6ff;font-size:15px;line-height:1.8;position:relative;padding-left:24px}.owner-quote:before{content:"“";position:absolute;left:-2px;top:-12px;font-size:48px;color:var(--gold);font-weight:900}.owner-sign{margin-top:10px;font-weight:700;color:#fff}.english-quote{color:var(--gold);font-size:23px;font-style:italic;line-height:1.45}.english-quote small{display:block;color:#fff;font-size:15px;margin-top:7px}.gold-line{height:3px;width:65px;background:var(--gold);margin-top:14px}
+.bottom-info{display:grid;grid-template-columns:1.1fr 1fr 1fr;gap:18px;align-items:stretch}.info-card{border-radius:10px;padding:18px;background:#f2f8ff;display:flex;gap:12px}.info-card:nth-child(2){background:#fff5df}.info-icon{font-size:30px}.info-card h3{margin:0 0 6px;font-size:17px}.info-card p{margin:0;color:var(--muted);font-size:13px;line-height:1.6}.info-card:nth-child(2) h3{color:#bd7600}
+footer{background:#04275a;color:#fff;padding:20px 0}.footer-row{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap}.footer-brand{font-weight:800}.footer-brand b{color:var(--gold)}.footer-brand small{display:block;font-size:11px;font-weight:400}.copyright{font-size:12px;color:#e1ebfb}.social{display:flex;gap:15px;font-weight:800}
+@media(max-width:950px){.navlinks{gap:12px}.navbtns{display:none}.feature-grid{grid-template-columns:repeat(3,1fr)}.owner-grid{grid-template-columns:170px 1fr}.owner-photo{width:155px;height:155px}.english-quote{grid-column:2}.bottom-info{grid-template-columns:1fr 1fr}.bottom-info>div:first-child{grid-column:1/-1}}
+@media(max-width:650px){.nav{min-height:65px;flex-wrap:wrap;padding:10px 0}.brand{font-size:16px}.brand-icon{font-size:29px}.menu-btn{display:block}.navlinks{display:none;order:3;width:100%;flex-direction:column;align-items:stretch;gap:0;padding:8px 0}.navlinks.open{display:flex}.navlinks a{padding:10px 6px;border-bottom:1px solid #ffffff20}.hero-inner{min-height:420px;align-items:flex-start;padding:38px 0 25px}.hero-art{position:absolute;right:0;bottom:0;opacity:.32;font-size:110px}.hero-copy{position:relative;z-index:2}.hero h2{font-size:19px}.mission-grid{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,1fr)}.quote-light{min-height:190px;padding:20px}.quote-light blockquote{font-size:18px}.quote-light .books{font-size:58px}.feature-grid{grid-template-columns:repeat(2,1fr);gap:10px}.feature-bottom{grid-template-columns:1fr}.motto{padding:18px}.owner-grid{grid-template-columns:1fr;text-align:center;gap:17px}.owner-photo{width:150px;height:150px}.owner-quote{text-align:left;max-width:520px;margin:auto}.english-quote{grid-column:auto}.gold-line{margin:14px auto}.bottom-info{grid-template-columns:1fr}.bottom-info>div:first-child{grid-column:auto}.footer-row{justify-content:center;text-align:center}.copyright{width:100%;order:3}}
+</style>
+</head>
+<body>
+<header>
+ <div class="container nav">
+  <a class="brand" href="/index.html"><span class="brand-icon">📚</span><span>Bihar <b>Academic Battle</b><small>Learn | Practice | Compete | Succeed</small></span></a>
+  <button class="menu-btn" id="menuBtn" aria-label="Open menu">☰</button>
+  <nav class="navlinks" id="navlinks">
+   <a href="/index.html">Home</a><a class="active" href="/about.html">About Us</a><a href="/index.html#courses">Courses</a><a href="/computer.html">Online Exam</a><a href="/index.html#contact">Contact</a>
+  </nav>
+  
+ </div>
+</header>
+
+<main>
+<section class="hero">
+ <div class="container hero-inner">
+  <div class="hero-copy">
+   <div class="eyebrow">ABOUT US</div>
+   <h1>Bihar <span>Academic Battle</span></h1>
+   <h2>बिहार की प्रतिभा, शिक्षा और सफलता का मंच</h2>
+   <p>Bihar Academic Battle एक शैक्षणिक मंच है, जिसका उद्देश्य विद्यार्थियों में ज्ञान, तार्किक सोच, रचनात्मकता और स्वस्थ प्रतिस्पर्धा की भावना को बढ़ावा देना है।</p>
+   <a class="cta" href="#mission">हमारे बारे में और जानें <span>➜</span></a>
+  </div>
+  <div class="hero-art" aria-hidden="true">🎓📚</div>
+ </div>
+</section>
+
+<section id="mission">
+ <div class="container mission-grid">
+  <div>
+   <div class="section-label">OUR MISSION</div>
+   <h2 class="section-title">हमारा उद्देश्य</h2>
+   <p class="lead">हम शिक्षा को अधिक रोचक, सुलभ और प्रतिस्पर्धात्मक बनाना चाहते हैं। ऑनलाइन क्विज़, विषय-आधारित प्रश्नों और डिजिटल परीक्षाओं के माध्यम से विद्यार्थियों को सीखने के नए अवसर देना हमारा प्रमुख उद्देश्य है।</p>
+   <div class="stats">
+    <div class="stat"><div class="emoji">👥</div><strong>विद्यार्थी</strong><span>ज्ञान और अभ्यास</span></div>
+    <div class="stat"><div class="emoji">🏫</div><strong>स्कूल</strong><span>शैक्षणिक सहयोग</span></div>
+    <div class="stat"><div class="emoji">📚</div><strong>प्रश्न</strong><span>विषय-आधारित अभ्यास</span></div>
+    <div class="stat"><div class="emoji">🏆</div><strong>उन्नति</strong><span>सीखें और आगे बढ़ें</span></div>
+   </div>
+  </div>
+  <div class="quote-light">
+   <blockquote>“हर विद्यार्थी में छिपी है एक अनमोल प्रतिभा, हमारा प्रयास है उसे सही मंच और अवसर देना।”<div class="gold-line"></div></blockquote>
+   <div class="books" aria-hidden="true">💡📚</div>
+  </div>
+ </div>
+</section>
+
+<section class="features-section" id="courses">
+ <div class="container">
+  <div class="section-label">OUR KEY FEATURES</div>
+  <h2 class="section-title">हमारी प्रमुख सुविधाएँ</h2>
+  <div class="feature-grid">
+   <article class="feature"><div class="feature-icon">🗺️</div><h3>Bihar GK</h3><p>बिहार के इतिहास, भूगोल, संस्कृति और सामान्य ज्ञान का अभ्यास।</p></article>
+   <article class="feature"><div class="feature-icon">🔢</div><h3>Mathematics</h3><p>गणितीय क्षमता और समस्या-समाधान कौशल का विकास।</p></article>
+   <article class="feature"><div class="feature-icon">⚗️</div><h3>Science</h3><p>वैज्ञानिक सोच, खोज और जिज्ञासा को प्रोत्साहन।</p></article>
+   <article class="feature"><div class="feature-icon">💻</div><h3>Computer</h3><p>डिजिटल ज्ञान और कंप्यूटर शिक्षा का अभ्यास।</p></article>
+   <article class="feature"><div class="feature-icon">🔤</div><h3>English & Hindi</h3><p>भाषा, व्याकरण और अभिव्यक्ति कौशल का विकास।</p></article>
+  </div>
+  <div class="feature-bottom">
+   <article class="feature-horizontal"><div class="feature-icon">📝</div><div><h3>Online Examination</h3><p>निर्धारित समय में ऑनलाइन परीक्षा देने की सुविधा।</p></div></article>
+   <article class="feature-horizontal"><div class="feature-icon">🏫</div><div><h3>School Registration</h3><p>स्कूलों के लिए पंजीकरण और विद्यार्थी प्रबंधन की सुविधा।</p></div></article>
+   <div class="motto"><em>Learn | Practice | Compete | Succeed</em><span>— साथ मिलकर बनाएँ बेहतर भविष्य —</span></div>
+  </div>
+ </div>
+</section>
+
+<section class="owner" id="owner">
+ <div class="container owner-grid">
+  <div class="owner-photo" title="अपनी फोटो assets/owner.jpg नाम से रखें"><span>👨🏻‍💼</span></div>
+  <div>
+   <div class="owner-label">OWNER'S QUOTE</div>
+   <h2>संस्थापक की प्रेरणा</h2>
+   <p class="owner-quote">“शिक्षा केवल एक डिग्री नहीं, बल्कि जीवन में आगे बढ़ने की सीख है। मेरा मानना है कि हर बच्चे को समान अवसर मिलना चाहिए, ताकि वह अपनी क्षमता को पहचान सके और अपने सपनों को साकार कर सके। Bihar Academic Battle उसी दिशा में एक छोटा लेकिन महत्वपूर्ण कदम है।”</p>
+   <div class="owner-sign">— संस्थापक एवं संचालक, Bihar Academic Battle</div>
+  </div>
+  <div>
+   <div class="english-quote">“Education is the most powerful weapon which you can use to change the world.”<small>— Nelson Mandela</small></div>
+   <div class="gold-line"></div>
+  </div>
+ </div>
+</section>
+
+<section>
+ <div class="container bottom-info">
+  <div>
+   <div class="section-label">OUR VISION</div><h2 class="section-title" style="font-size:23px">हमारा दृष्टिकोण</h2>
+   <p class="lead">हम चाहते हैं कि प्रत्येक विद्यार्थी अपनी क्षमता के अनुसार आगे बढ़े और शिक्षा के प्रति आत्मविश्वास विकसित करे। हमारा प्रयास है कि तकनीक और गुणवत्तापूर्ण शैक्षणिक गतिविधियों को जोड़कर सीखने की प्रक्रिया को बेहतर बनाया जाए।</p>
+  </div>
+  <div class="info-card"><div class="info-icon">📣</div><div><h3>हमारा संदेश</h3><p><b>सीखें, अभ्यास करें, प्रतिस्पर्धा करें और सफलता की ओर बढ़ें।</b><br>— Bihar Academic Battle</p></div></div>
+  <div class="info-card" id="contact"><div class="info-icon">✉️</div><div><h3>संपर्क करें</h3><p>वेबसाइट: <b>Bihar Academic Battle</b><br>शैक्षणिक सहयोग और पंजीकरण के लिए वेबसाइट के Contact सेक्शन का उपयोग करें।</p></div></div>
+ </div>
+</section>
+</main>
+
+<footer>
+ <div class="container footer-row">
+  <a class="brand" href="/index.html"><span class="brand-icon">📚</span><span>Bihar <b>Academic Battle</b><small>Learn | Practice | Compete | Succeed</small></span></a>
+  <div class="copyright">© <span id="year"></span> Bihar Academic Battle. All rights reserved.</div>
+  <div class="social"><a href="/index.html" aria-label="Home">⌂</a><a href="#owner" aria-label="Owner">✦</a><a href="#contact" aria-label="Contact">✉</a></div>
+ </div>
+</footer>
+<script>
+document.getElementById("year").textContent = new Date().getFullYear();
+document.getElementById("menuBtn").addEventListener("click", function(){
+ const nav = document.getElementById("navlinks");
+ nav.classList.toggle("open");
+ this.setAttribute("aria-expanded", nav.classList.contains("open") ? "true" : "false");
+});
+</script>
+</body>
+</html>

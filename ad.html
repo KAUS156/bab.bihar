@@ -96,10 +96,13 @@ dialog::backdrop{background:#081a37a8}
     <div class="brand">
       BIHAR ACADEMIC BATTLE
       <small>Administrator Dashboard • School & Admit Card Management</small>
-    </div>
+    </div> <a href="/aad.html" id="resultBtn" class="btn-gold hidden">
+  View Results
+</a>
     <div>
       <span id="adminEmail" style="font-size:13px;margin-right:10px"></span>
       <button id="logoutBtn" class="btn-gold hidden">Logout</button>
+    
     </div>
   </div>
 </header>
@@ -351,7 +354,7 @@ function showMessage(id,message,error=false){
   el.classList.remove("hidden");
 }
 function hideMessage(id){$(id).classList.add("hidden")}
-
+document.getElementById("resultBtn").classList.remove("hidden");
 async function verifyAdmin(user){
   const snap=await get(ref(db,"admins/"+user.uid));
   return snap.exists() && snap.val()===true;
