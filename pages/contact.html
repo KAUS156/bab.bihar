@@ -1,0 +1,399 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b2d68">
+  <meta name="description" content="Contact Bihar Academic Battle support for student registration, results, certificates and school assistance.">
+  <title>Contact Support | Bihar Academic Battle</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      color: #172033;
+      background: #ffffff;
+    }
+
+    a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .navbar {
+      min-height: 72px;
+      padding: 14px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      background: #0b2d68;
+      color: white;
+    }
+
+    .brand {
+      color: white;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 19px;
+      line-height: 1.4;
+    }
+
+    .brand span {
+      display: block;
+      color: #ffd044;
+      font-size: 11px;
+      letter-spacing: 1.3px;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 22px;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .nav-links a:hover {
+      color: #ffd044;
+    }
+
+    .hero {
+      padding: 43px 20px 20px;
+      text-align: center;
+      background: #ffffff;
+    }
+
+    .hero h1 {
+      color: #092d65;
+      font-size: clamp(28px, 4vw, 36px);
+      margin: 0 0 17px;
+    }
+
+    .hero p {
+      max-width: 720px;
+      margin: auto;
+      color: #526a8b;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .support-section {
+      padding: 17px 20px 55px;
+    }
+
+    .support-cards {
+      max-width: 1220px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px;
+    }
+
+    .support-card {
+      padding: 30px 18px;
+      min-height: 258px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      background: #f3f8ff;
+      border: 1px solid #d8e6fb;
+      border-radius: 19px;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .support-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(9, 45, 101, .09);
+    }
+
+    .support-icon {
+      width: 65px;
+      height: 65px;
+      display: grid;
+      place-items: center;
+      background: #0b2d68;
+      color: white;
+      border-radius: 18px;
+      font-size: 29px;
+      margin-bottom: 18px;
+    }
+
+    .support-card h2 {
+      margin: 0 0 14px;
+      color: #092d65;
+      font-size: 19px;
+    }
+
+    .support-card p {
+      color: #526a8b;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 0 0 22px;
+    }
+
+    .support-btn {
+      display: inline-block;
+      margin-top: auto;
+      padding: 12px 17px;
+      border-radius: 28px;
+      background: #ffc928;
+      color: #071f49;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      transition: background .2s;
+    }
+
+    .support-btn:hover {
+      background: #f2b900;
+    }
+
+    .faq-section {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 20px 60px;
+    }
+
+    .faq-section h2 {
+      text-align: center;
+      color: #092d65;
+      font-size: 27px;
+      margin-bottom: 28px;
+    }
+
+    .faq-item {
+      margin-bottom: 12px;
+      border: 1px solid #dce6f4;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .faq-item summary {
+      padding: 17px;
+      cursor: pointer;
+      color: #092d65;
+      font-weight: 700;
+      font-size: 14px;
+      background: #f7faff;
+    }
+
+    .faq-item p {
+      padding: 0 17px 14px;
+      margin: 0;
+      color: #526a8b;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .footer {
+      padding: 25px 15px;
+      text-align: center;
+      color: #dce7ff;
+      background: #0b2d68;
+      font-size: 13px;
+      line-height: 1.8;
+    }
+
+    .footer a {
+      color: #ffd044;
+      text-decoration: none;
+    }
+
+    @media (max-width: 760px) {
+      .navbar {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .nav-links {
+        justify-content: center;
+        gap: 14px;
+      }
+
+      .support-cards {
+        grid-template-columns: 1fr;
+        max-width: 430px;
+      }
+
+      .support-card {
+        min-height: 245px;
+      }
+
+      .hero {
+        padding-top: 35px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      .support-card,
+      .support-btn {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="navbar">
+    <a class="brand" href="../index.html">
+      BIHAR ACADEMIC BATTLE
+      <span>BIHAR'S ACADEMIC BATTLE PLATFORM</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="../index.html">Home</a>
+      <a href="../index.html#battles">Battles</a>
+      <a href="../index.html#about">About</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero" id="contact">
+      <h1>Need Help? Contact Support</h1>
+      <p>
+        Students, parents and schools can contact Bihar Academic Battle
+        for registration, results, certificates and other queries.
+      </p>
+    </section>
+
+    <section class="support-section" aria-label="Contact support options">
+      <div class="support-cards">
+
+        <!-- CALL SUPPORT -->
+        <article class="support-card">
+          <div class="support-icon" aria-hidden="true">📞</div>
+          <h2>Call Us</h2>
+          <p>Talk to our support team directly.</p>
+          <a class="support-btn" href="tel:+917015532197">
+            Call 7015532197 →
+          </a>
+        </article>
+
+        <!-- WHATSAPP SUPPORT -->
+        <article class="support-card">
+          <div class="support-icon" aria-hidden="true">💬</div>
+          <h2>WhatsApp Support</h2>
+          <p>Chat with us for quick assistance.</p>
+          <a
+            class="support-btn"
+            href="https://wa.me/917015532197?text=Hello%20Bihar%20Academic%20Battle%20Support"
+            target="_blank"
+            rel="noopener noreferrer">
+            Chat on WhatsApp →
+          </a>
+        </article>
+
+        <!-- EMAIL SUPPORT -->
+        <article class="support-card">
+          <div class="support-icon" aria-hidden="true">✉️</div>
+          <h2>Email Support</h2>
+          <p>Send us your questions by email.</p>
+      
+<a
+  class="support-btn"
+  href="https://mail.google.com/mail/?view=cm&fs=1&to=biharbab00@gmail.com&su=Bihar%20Academic%20Battle%20Support"
+  target="_blank"
+  rel="noopener noreferrer">
+  Email Support →
+</a>
+
+        </article>
+
+      </div>
+    </section>
+
+    <section class="faq-section">
+      <h2>Frequently Asked Questions</h2>
+
+      <details class="faq-item">
+        <summary>How can I register my school?</summary>
+        <p>
+          Visit the Bihar Academic Battle website and open the
+          School Registration page. Contact support if you need help.
+        </p>
+      </details>
+
+      <details class="faq-item">
+        <summary>How can I get help with my student registration?</summary>
+        <p>
+          Contact our support team by phone or WhatsApp and explain
+          your registration issue.
+        </p>
+      </details>
+
+      <details class="faq-item">
+        <summary>How can I ask about certificates or results?</summary>
+        <p>
+          Contact support and provide the relevant student ID or
+          registration details. Do not share your password or OTP.
+        </p>
+      </details>
+
+      <details class="faq-item">
+        <summary>How can a school get technical support?</summary>
+        <p>
+          School representatives can contact support for login,
+          student records, examination and admit card assistance.
+        </p>
+      </details>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <strong>BIHAR ACADEMIC BATTLE</strong><br>
+    Bihar's Academic Battle Platform<br>
+    <a href="../index.html">Home</a> |
+    <a href="#contact">Contact Support</a>
+    <p>© <span id="currentYear"></span> Bihar Academic Battle. All rights reserved.</p>
+  </footer>
+
+  <script>
+    // Replace this with your real support email address.
+    const SUPPORT_EMAIL = "YOUR_SUPPORT_EMAIL@example.com";
+
+    const emailLink = document.getElementById("emailSupportLink");
+
+    if (
+      SUPPORT_EMAIL &&
+      SUPPORT_EMAIL !== "YOUR_SUPPORT_EMAIL@example.com"
+    ) {
+      emailLink.href =
+        "mailto:" + SUPPORT_EMAIL +
+        "?subject=" + encodeURIComponent(
+          "Bihar Academic Battle Support"
+        );
+    } else {
+      emailLink.addEventListener("click", function (event) {
+        event.preventDefault();
+        alert(
+          "Please configure your official support email in contact.html."
+        );
+      });
+    }
+
+    document.getElementById("currentYear").textContent =
+      new Date().getFullYear();
+  </script>
+
+</body>
+</html>
